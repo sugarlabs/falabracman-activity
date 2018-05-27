@@ -47,7 +47,8 @@ import pango
 import logging
 import pangocairo
 import pygame.rect, pygame.image
-import gtk
+from gi.repository import Gtk
+from gi.repository import Gdk
 import struct
 from pygame import surface
 from pygame.font import Font
@@ -202,7 +203,7 @@ class PangoFont(object):
     def _createLayout( self, text ):
         """Produces a Pango layout describing this text in this font"""
         # create layout
-        layout = pango.Layout(gtk.gdk.pango_context_get())
+        layout = pango.Layout(Gdk.pango_context_get())
         layout.set_font_description(self.fd)
         if self.underline:
             attrs = layout.get_attributes()

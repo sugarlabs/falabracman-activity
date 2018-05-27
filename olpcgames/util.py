@@ -8,7 +8,7 @@ import os.path
 NON_SUGAR_ROOT = '~/.sugar/default/olpcgames'
 
 try:
-    from sugar.activity.activity import get_bundle_path as _get_bundle_path
+    from sugar3.activity.activity import get_bundle_path as _get_bundle_path
     def get_bundle_path( ):
         """Retrieve bundle path from activity with fix for silly registration bug"""
         path = _get_bundle_path()

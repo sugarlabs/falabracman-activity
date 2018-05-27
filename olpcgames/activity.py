@@ -25,14 +25,19 @@ logging.root.setLevel( logging.WARN )
 log = logging.getLogger( 'olpcgames.activity' )
 ##log.setLevel( logging.DEBUG )
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gtk.gdk
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import Gdk
 import os
 
-from sugar.activity import activity
-from sugar.graphics import style
+from sugar3.activity import activity
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.activity.widgets import StopButton
+from sugar3.graphics import style
 from olpcgames.canvas import PygameCanvas
 from olpcgames import mesh, util
 
@@ -96,7 +101,7 @@ class PygameActivity(activity.Activity):
         super(PygameActivity, self).__init__(handle)
         self.make_global()
         if self.game_size is None:
-            width,height = gtk.gdk.screen_width(), gtk.gdk.screen_height()
+            width,height = Gdk.Screen.width(), Gdk.Screen.height()
             log.info( 'Total screen size: %s %s', width,height)
             # for now just fudge the toolbar size...
             self.game_size = width, height - (1*style.GRID_CELL_SIZE)
@@ -119,9 +124,25 @@ class PygameActivity(activity.Activity):
         This is a customisation point for those games which want to
         provide custom toolbars when running under Sugar.
         """
-        toolbar = activity.ActivityToolbar(self)
-        toolbar.show()
-        self.set_toolbox(toolbar)
+        toolbar_box = ToolbarBox()
+        self.set_toolbar_box(toolbar_box)
+        toolbar_box.show()
+
+        activity_button = ActivityToolbarButton(self)
+        toolbar_box.toolbar.insert(activity_button, -1)
+        activity_button.show()
+
+        separator = Gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbar_box.toolbar.insert(separator, -1)
+        separator.show()
+
+        stop_button = StopButton(self)
+        toolbar_box.toolbar.insert(stop_button, -1)
+        stop_button.show()
+
+        self.show_all()
         def shared_cb(*args, **kwargs):
             log.info( 'shared: %s, %s', args, kwargs )
             try:
@@ -151,8 +172,8 @@ class PygameActivity(activity.Activity):
             # launched from Neighborhood)
             joined_cb()
 
-        toolbar.title.unset_flags(gtk.CAN_FOCUS)
-        return toolbar
+        #toolbar_box.title.set_can_focus(False)
+        return toolbar_box
 
     PYGAME_CANVAS_CLASS = PygameCanvas
     def build_canvas( self ):
@@ -167,11 +188,11 @@ class PygameActivity(activity.Activity):
             self._pgc.connect_game(self.game_handler or self.game_name)
             # XXX Bad coder, do not hide in a widely subclassed operation
             # map signal does not appear to show up on socket instances
-            gtk.gdk.threads_init()
+            Gdk.threads_init()
             return self._pgc
         else:
             import hippo
-            self._drawarea = gtk.DrawingArea()
+            self._drawarea = Gtk.DrawingArea()
             canvas = hippo.Canvas()
             canvas.grab_focus()
             self.set_canvas(canvas)
