@@ -14,10 +14,13 @@ import weakref
 import olpcgames
 from olpcgames import _gtkmain
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gst
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import Gdk
+gi.require_version('Gst', '1.0')
+from gi.repository import Gst
+Gst.init(None)
 
 class VideoWidget(gtk.DrawingArea):
     """Widget to render GStreamer video over our Pygame Canvas
@@ -102,7 +105,7 @@ class Player(object):
         self._playing = False
         self._videowidget = videowidget
 
-        self._pipeline = gst.parse_launch(pipe_desc)
+        self._pipeline = Gst.parse_launch(pipe_desc)
 
         bus = self._pipeline.get_bus()
         bus.enable_sync_message_emission()
@@ -113,7 +116,7 @@ class Player(object):
     def play(self):
         log.info( 'Play' )
         if self._playing == False:
-            self._pipeline.set_state(gst.STATE_PLAYING)
+            self._pipeline.set_state(Gst.State.PLAYING)
             self._playing = True
 
     def pause(self):
@@ -121,11 +124,11 @@ class Player(object):
         if self._playing == True:
             if self._synchronized:
                 log.debug( '  pause already sync\'d' )
-                self._pipeline.set_state(gst.STATE_PAUSED)
+                self._pipeline.set_state(Gst.State.PAUSED)
             self._playing = False
     def stop( self ):
         """Stop all playback"""
-        self._pipeline.set_state( gst.STATE_NULL )
+        self._pipeline.set_state(Gst.State.NULL)
 
     def on_sync_message(self, bus, message):
         log.info( 'Sync: %s', message )
@@ -138,7 +141,7 @@ class Player(object):
     def on_message(self, bus, message):
         log.info( 'Message: %s', message )
         t = message.type
-        if t == gst.MESSAGE_ERROR:
+        if t == Gst.MessageType.ERROR:
             err, debug = message.parse_error()
             log.warn("Video error: (%s) %s" ,err, debug)
             self._playing = False

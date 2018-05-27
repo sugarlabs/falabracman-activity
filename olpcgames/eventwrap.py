@@ -19,7 +19,7 @@ Extensions:
         release a few more resources, then a bit more...
 """
 import pygame
-import gtk
+from gi.repository import Gtk
 import Queue
 import thread, threading
 import logging

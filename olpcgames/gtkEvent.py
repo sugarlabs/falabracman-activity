@@ -1,8 +1,9 @@
 """gtkEvent.py: translate GTK events into Pygame events."""
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gobject
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GObject
 import pygame
 from olpcgames import eventwrap
 import logging 
@@ -62,16 +63,17 @@ class Translator(object):
 
         # Need to set our X event masks so we see mouse motion and stuff --
         mainwindow.set_events(
-            gtk.gdk.KEY_PRESS_MASK | \
-            gtk.gdk.KEY_RELEASE_MASK \
+            Gdk.EventMask.KEY_PRESS_MASK | \
+            Gdk.EventMask.KEY_RELEASE_MASK | \
+            Gdk.EventMask.VISIBILITY_NOTIFY_MASK
         )
         
         self._inner_evb.set_events(
-            gtk.gdk.POINTER_MOTION_MASK | \
-            gtk.gdk.POINTER_MOTION_HINT_MASK | \
-            gtk.gdk.BUTTON_MOTION_MASK | \
-            gtk.gdk.BUTTON_PRESS_MASK | \
-            gtk.gdk.BUTTON_RELEASE_MASK 
+            Gdk.EventMask.POINTER_MOTION_MASK | \
+            Gdk.EventMask.POINTER_MOTION_HINT_MASK | \
+            Gdk.EventMask.BUTTON_MOTION_MASK | \
+            Gdk.EventMask.BUTTON_PRESS_MASK | \
+            Gdk.EventMask.BUTTON_RELEASE_MASK
         )
           
         # Callback functions to link the event systems
@@ -83,8 +85,8 @@ class Translator(object):
         self._inner_evb.connect('motion-notify-event', self._mousemove)
 
         # You might need to do this
-        mainwindow.set_flags(gtk.CAN_FOCUS)
-        self._inner_evb.set_flags(gtk.CAN_FOCUS)
+        mainwindow.set_can_focus(True)
+        self._inner_evb.set_can_focus(True)
         
         # Internal data
         self.__stopped = False
@@ -98,7 +100,7 @@ class Translator(object):
         self.__tick_id = None
 
         #print "translator  initialized"
-        self._inner_evb.connect( 'expose-event', self.do_expose_event )
+        self._inner_evb.connect( 'draw', self.do_expose_event )
 #        screen = gtk.gdk.screen_get_default()
 #        screen.connect( 'size-changed', self.do_resize_event )
         self._inner_evb.connect( 'configure-event', self.do_resize_event )
@@ -168,7 +170,7 @@ class Translator(object):
         
         
     def _keyevent(self, widget, event, type):
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gdk.keyval_name(event.keyval)
         if key is None:
             # No idea what this key is.
             return False 
@@ -192,7 +194,7 @@ class Translator(object):
             self.__keystate[keycode] = type == pygame.KEYDOWN
             if type == pygame.KEYUP:
                 mod = self._keymods()
-            ukey = unichr(gtk.gdk.keyval_to_unicode(event.keyval))
+            ukey = unichr(Gdk.keyval_to_unicode(event.keyval))
             if ukey == '\000':
                 ukey = ''
             evt = eventwrap.Event(type, key=keycode, unicode=ukey, mod=mod)
@@ -229,7 +231,7 @@ class Translator(object):
         # if this is a hint, then let's get all the necessary 
         # information, if not it's all we need.
         if event.is_hint:
-            x, y, state = event.window.get_pointer()
+            win, x, y, state = event.window.get_device_position(event.device)
         else:
             x = event.x
             y = event.y
@@ -240,9 +242,9 @@ class Translator(object):
         self.__mouse_pos = (x, y)
         
         self.__button_state = [
-            state & gtk.gdk.BUTTON1_MASK and 1 or 0,
-            state & gtk.gdk.BUTTON2_MASK and 1 or 0,
-            state & gtk.gdk.BUTTON3_MASK and 1 or 0,
+            state & Gdk.ModifierType.BUTTON1_MASK and 1 or 0,
+            state & Gdk.ModifierType.BUTTON2_MASK and 1 or 0,
+            state & Gdk.ModifierType.BUTTON3_MASK and 1 or 0,
         ]
         
         evt = eventwrap.Event(pygame.MOUSEMOTION,

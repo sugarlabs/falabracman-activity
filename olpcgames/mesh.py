@@ -121,7 +121,7 @@ log = logging.getLogger( 'olpcgames.mesh' )
 import olpcgames
 from olpcgames.util import get_traceback
 try:
-    from sugar.presence.tubeconn import TubeConnection
+    from sugar3.presence.tubeconn import TubeConnection
 except ImportError, err:
     TubeConnection = object
 try:
@@ -136,7 +136,7 @@ except ImportError, err:
     telepathy = None
 
 try:
-    import sugar.presence.presenceservice
+    import sugar3.presence.presenceservice
 except Exception, err:
     pass
 import pygame.event as PEvent
@@ -416,7 +416,7 @@ def _get_presence_service( ):
     log.debug( """About to import sugar.presence.presenceservice""" )
     try:
         log.debug( 'About to retrieve presence service instance' )
-        pservice = sugar.presence.presenceservice.get_instance()
+        pservice = sugar3.presence.presenceservice.get_instance()
         try:
             log.debug( '  Retrieved presence service instance: %s', pservice )
             name, path = pservice.get_preferred_connection()

@@ -303,7 +303,7 @@ def main(language="bra"):
     playing = True
     clock = pygame.time.Clock()
     
-    musica.play(-1)
+    #musica.play(-1)
 
     while playing:
         clock.tick(20)
@@ -330,7 +330,7 @@ def main(language="bra"):
         estado.dibujar(playing_area)
         pygame.display.flip()
 
-    musica.stop()
+    #musica.stop()
 
 if __name__ == "__main__":
     main()
