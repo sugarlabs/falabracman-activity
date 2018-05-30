@@ -2,7 +2,7 @@
 name = falabracman 
 activity_version = 2
 host_version = 1
-service_name = org.laptop.community.falabracman
+bundle_id = org.laptop.community.falabracman
 icon = activity
 exec = sugar-activity activity.Activity
 show_launcher = yes
