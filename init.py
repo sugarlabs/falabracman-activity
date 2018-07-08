@@ -27,7 +27,9 @@ pygame.mixer.pre_init(44100, -16, False)
 pygame.init()
 
 # Definimos la pantalla
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+info = pygame.display.Info()
+screen = (info.current_w, info.current_h-50)
+screen = pygame.display.set_mode(screen) #, pygame.FULLSCREEN)
 
 # Titulo
 pygame.display.set_caption("falabracman")
