@@ -99,7 +99,8 @@ class Menu:
         self.dibujarOpciones()
 
     def dibujarFondo(self):
-        screen.blit(self.fondo, (0, 0))
+        left_padding = (screen.get_rect().width-config.SCREEN_WIDTH)/2
+        screen.blit(self.fondo, (left_padding, 0))
 
     def salirDelMenu(self):
         self.salir = True

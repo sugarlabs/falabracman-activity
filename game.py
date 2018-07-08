@@ -30,8 +30,9 @@ ALTURA_BARRA = 150
 
 screen_width = screen.get_rect().width
 screen_height = screen.get_rect().height
-area_barra = screen.subsurface( (0,0), (screen_width, ALTURA_BARRA) )
-playing_area = screen.subsurface( (0,ALTURA_BARRA), (screen_width, screen_height - ALTURA_BARRA) )
+
+area_barra = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,0), (SCREEN_WIDTH, ALTURA_BARRA) )
+playing_area = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,ALTURA_BARRA), (SCREEN_WIDTH, screen_height - ALTURA_BARRA) )
 font = pygame.font.Font("fonts/VeraBd.ttf", 70)
 aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
 musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
@@ -296,7 +297,7 @@ def main(language="bra"):
     dic = paladict.PalaDict(language)
 
     global display
-    display = Display(area_barra.subsurface((50,50), (screen_width-100,100)))
+    display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
     global estado
     estado = Estado(dic)
     #Comienza el juego
