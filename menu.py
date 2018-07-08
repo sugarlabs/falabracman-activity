@@ -19,7 +19,6 @@
 
 import pygame
 from pygame.locals import *
-from olpcgames import pausescreen
 from init import screen
 import gettext 
 import locale 
@@ -39,11 +38,11 @@ def mostrarImagen(imagen, duracion):
     ticks_final = pygame.time.get_ticks() + duracion * 1000
 
     while pygame.time.get_ticks() < ticks_final:
-        for e in pausescreen.get_events(config.DEMORA_PAUSA):
-            if e.type == KEYDOWN:
-                if e.key in [K_ESCAPE, K_SPACE, K_RETURN]:
-                    sonido_menu.play()
-                    return
+        e = pygame.event.poll()
+        if e.type == KEYDOWN:
+            if e.key in [K_ESCAPE, K_SPACE, K_RETURN]:
+                sonido_menu.play()
+                return
         pygame.display.flip()
         clock.tick(10)
 
@@ -108,20 +107,20 @@ class Menu:
     def run(self):
         self.salir = False
         while not self.salir:
-            for e in pausescreen.get_events(config.DEMORA_PAUSA):
-                if e.type == QUIT:
-                    salir = True
-                if e.type == KEYDOWN:
-                    if e.key in [K_UP, K_KP8]:
-                        self.moverSeleccion(-1)
-                    elif e.key in [K_DOWN, K_KP2]:
-                        self.moverSeleccion(1)
-                    elif e.key in [K_RETURN, K_KP7, K_KP1, K_KP3, K_KP9]:
-                        sonido_menu.play() 
-                        titulo, funcion = self.opciones[self.seleccionado]
-                        funcion()
-                        self.actualizar()
-                        break
+            e = pygame.event.poll()
+            if e.type == QUIT:
+                salir = True
+            if e.type == KEYDOWN:
+                if e.key in [K_UP, K_KP8]:
+                    self.moverSeleccion(-1)
+                elif e.key in [K_DOWN, K_KP2]:
+                    self.moverSeleccion(1)
+                elif e.key in [K_RETURN, K_KP7, K_KP1, K_KP3, K_KP9]:
+                    sonido_menu.play() 
+                    titulo, funcion = self.opciones[self.seleccionado]
+                    funcion()
+                    self.actualizar()
+                    break
             pygame.display.flip()
             clock.tick(10)
 

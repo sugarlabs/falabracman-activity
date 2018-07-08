@@ -19,11 +19,11 @@
 import pygame
 from pygame.locals import *
 from random import randrange
-from olpcgames import pausescreen
 import random
 import hollow
 from init import screen
 from config import *
+import sys
 
 FBM_SPEED = 15
 ALTURA_BARRA = 150
@@ -308,25 +308,28 @@ def main(language="bra"):
 
     while playing:
         clock.tick(20)
-        for event in pausescreen.get_events(DEMORA_PAUSA):
-            if event.type == QUIT:
+        event = pygame.event.poll()
+        if event.type == QUIT:
+            playing = False
+            pygame.quit()
+            sys.exit()
+        elif event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
                 playing = False
-            elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    playing = False
-                elif event.key in [K_UP, K_KP8, K_KP9]:
-                    estado.grossini.mirar("arriba")
-                elif event.key in [K_DOWN, K_KP2, K_KP3]:
-                    estado.grossini.mirar("abajo")
-                elif event.key in [K_LEFT, K_KP4, K_KP7]:
-                    estado.grossini.mirar("izquierda")
-                elif event.key in [K_RIGHT, K_KP6, K_KP1]:
-                    estado.grossini.mirar("derecha")
+            elif event.key in [K_UP, K_KP8, K_KP9]:
+                estado.grossini.mirar("arriba")
+            elif event.key in [K_DOWN, K_KP2, K_KP3]:
+                estado.grossini.mirar("abajo")
+            elif event.key in [K_LEFT, K_KP4, K_KP7]:
+                estado.grossini.mirar("izquierda")
+            elif event.key in [K_RIGHT, K_KP6, K_KP1]:
+                estado.grossini.mirar("derecha")
         try:
             estado.step()
         except EndOfGame, e:
             e.accion()
             break
+
 
         estado.dibujar(playing_area)
         pygame.display.flip()
