@@ -132,9 +132,9 @@ class Player(object):
 
     def on_sync_message(self, bus, message):
         log.info( 'Sync: %s', message )
-        if message.structure is None:
+        if message.get_structure() is None:
             return
-        if message.structure.get_name() == 'prepare-xwindow-id':
+        if message.get_structure().get_name() == 'prepare-xwindow-id':
             self._synchronized = True
             self._videowidget.set_sink(message.src)
 
