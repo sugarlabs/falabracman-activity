@@ -1,5 +1,6 @@
 from gettext import gettext as _
 
+
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
@@ -23,12 +24,11 @@ class activity(Activity):
 
     def __init__(self, handle):
         Activity.__init__(self, handle)
-
+        
         self.paused = False
         
         # Create the game instances
         self.game = TestGame
-        
         self.game.canvas = sugargame.canvas.PygameCanvas(
                 self,
                 main=self.game.main,
@@ -55,52 +55,9 @@ class activity(Activity):
         toolbar_box.toolbar.insert(activity_button, -1)
         activity_button.show()
 
-        # Pause/Play button:
 
-        pause_play = ToolButton('media-playback-pause')
-        pause_play.set_tooltip(_("Pause"))
-        pause_play.set_accelerator(_('<ctrl>space'))
-        pause_play.connect('clicked', self._pause_play_cb)
-        pause_play.show()
 
-        toolbar_box.toolbar.insert(pause_play, -1)
 
-        # Blank space (separator) and Stop button at the end:
 
-        separator = Gtk.SeparatorToolItem()
-        separator.props.draw = False
-        separator.set_expand(True)
-        toolbar_box.toolbar.insert(separator, -1)
-        separator.show()
-
-        stop_button = StopButton(self)
-        toolbar_box.toolbar.insert(stop_button, -1)
-        stop_button.show()
-        stop_button.connect('clicked', self._stop_cb)
-
-    def _pause_play_cb(self, button):
-        # Pause or unpause the game.
-        self.paused = not self.paused
-        self.game.play()
-
-        # Update the button to show the next action.
-        if self.paused:
-            button.set_icon_name('media-playback-start')
-            button.set_tooltip(_("Start"))
-        else:
-            button.set_icon_name('media-playback-pause')
-            button.set_tooltip(_("Pause"))
-
-    def _stop_cb(self, button):
-        self.game.running = False
-
-    def read_file(self, file_path):
-        self.game.read_file(file_path)
-
-    def write_file(self, file_path):
-        self.game.write_file(file_path)
-
-    def get_preview(self):
-        return self._pygamecanvas.get_preview()
         
         

@@ -33,13 +33,19 @@ ALTURA_BARRA = 150
 
 
 def main(language="bra"):
-        
-    
+    from init import screen
+    screen_width = screen.get_rect().width
+    screen_height = screen.get_rect().height
+
+    area_barra = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,0), (SCREEN_WIDTH, ALTURA_BARRA) )
+    playing_area = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,ALTURA_BARRA), (SCREEN_WIDTH, screen_height - ALTURA_BARRA) )
+    '''
     try:
         if screen:
             pass
     except NameError:
          screen = pygame.display.get_surface()
+    '''     
     font = pygame.font.Font("fonts/VeraBd.ttf", 70)
     aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
     musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
@@ -306,13 +312,7 @@ def main(language="bra"):
     display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
     #global estado
     estado = Estado(dic)
-    pygame.init()
-
-    try:
-        pygame.mixer.init()
-    except Exception as err:
-        self.sound = False
-        print ('error with sound', err)
+    
     #Comienza el juego
     playing = True
     clock = pygame.time.Clock()
@@ -350,6 +350,7 @@ def main(language="bra"):
     #musica.stop()
 
 if __name__ == "__main__":
+    
     from init import screen
     screen_width = screen.get_rect().width
     screen_height = screen.get_rect().height
@@ -357,6 +358,13 @@ if __name__ == "__main__":
     area_barra = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,0), (SCREEN_WIDTH, ALTURA_BARRA) )
     playing_area = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,ALTURA_BARRA), (SCREEN_WIDTH, screen_height - ALTURA_BARRA) )
 
+    try:
+        pygame.mixer.init()
+    except Exception as err:
+        self.sound = False
+        print ('error with sound', err)
+        
+        
     main()
 
 
