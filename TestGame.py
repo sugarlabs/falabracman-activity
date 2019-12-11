@@ -26,7 +26,7 @@ import hollow
 from init import screen
 from config import *
 import sys
-
+import pdb
 FBM_SPEED = 15
 ALTURA_BARRA = 150
 
@@ -298,10 +298,17 @@ def main(language="bra"):
     import paladict
     dic = paladict.PalaDict(language)
 
-    #global display
-    #display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
+    global display
+    display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
     global estado
     estado = Estado(dic)
+    pygame.init()
+
+    try:
+        pygame.mixer.init()
+    except Exception as err:
+        self.sound = False
+        print ('error with sound', err)
     #Comienza el juego
     playing = True
     clock = pygame.time.Clock()
