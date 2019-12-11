@@ -61,7 +61,7 @@ class Menu:
         self.imagenes = []
         for texto, funcion in self.opciones:
             texto_traducido = gettext.gettext(texto)
-            print texto, gettext.gettext(texto)
+            print(texto, gettext.gettext(texto))
             imagen0 = self.font.render(texto_traducido, 1, self.colorApagado)
             imagen1 = self.font.render(texto_traducido, 1, self.colorEncendido)
             self.imagenes.append( [imagen0, imagen1] )
@@ -157,10 +157,10 @@ class MenuPrincipal(Menu):
     def comenzar_nuevo_juego(self):
         systemLang=os.environ["LANG"][:2]
         if systemLang=="es":
-            print "Cambiando el lenguaje a esp"
+            print("Cambiando el lenguaje a esp")
             lang = "esp"
         else:
-            print "Cambiando el lenguaje a bra"
+            print("Cambiando el lenguaje a bra")
             lang = "bra"
 
         import game
@@ -175,7 +175,7 @@ class MenuPrincipal(Menu):
 
     def salir_del_programa(self):
         import sys
-        print "Gracias por utilizar este programa."
+        print("Gracias por utilizar este programa.")
         sys.exit(0)
 
 def main():    

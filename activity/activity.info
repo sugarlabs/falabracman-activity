@@ -1,8 +1,6 @@
 [Activity]
-name = falabracman 
-activity_version = 2
-host_version = 1
-bundle_id = org.laptop.community.falabracman
+name = SugargameTest
+bundle_id = org.sugarlabs.SugargameTest
+exec = sugar-activity3 activity.activity
 icon = activity
-exec = sugar-activity activity.Activity
-show_launcher = yes
+activity_version = 1

@@ -326,7 +326,7 @@ def main(language="bra"):
                 estado.grossini.mirar("derecha")
         try:
             estado.step()
-        except EndOfGame, e:
+        except EndOfGame as e:
             e.accion()
             break
 
