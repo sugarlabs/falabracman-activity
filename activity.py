@@ -28,10 +28,10 @@ class activity(Activity):
         self.paused = False
 
         # Create the game instances
-        self.game = TestGame.main
+        self.game = TestGame
         self.game.canvas = sugargame.canvas.PygameCanvas(
                 self,
-                main=self.game.run,
+                main=self.game.main,
                 modules=[pygame.display, pygame.font])
         self.set_canvas(self.game.canvas)
         self.game.canvas.grab_focus()
@@ -41,13 +41,10 @@ class activity(Activity):
         # Build the Pygame canvas and start the game running
         # (self.game.run is called when the activity constructor
         # returns).
-        self._pygamecanvas = sugargame.canvas.PygameCanvas(
-            self, main=self.game.run, modules=[pygame.display])
-
+        
         # Note that set_canvas implicitly calls read_file when
         # resuming from the Journal.
-        self.set_canvas(self._pygamecanvas)
-        self._pygamecanvas.grab_focus()
+
 
     def build_toolbar(self):
         toolbar_box = ToolbarBox()

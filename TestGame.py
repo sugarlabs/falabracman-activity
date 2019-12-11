@@ -19,9 +19,6 @@
 
 
 import pygame
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 from pygame.locals import *
 from random import randrange
 import random
@@ -30,8 +27,6 @@ from init import screen
 from config import *
 import sys
 
-
-# CONSTANTS =======================================
 FBM_SPEED = 15
 ALTURA_BARRA = 150
 
@@ -43,10 +38,6 @@ playing_area = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,ALTURA_BARRA), 
 font = pygame.font.Font("fonts/VeraBd.ttf", 70)
 aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
 musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
-# CONSTANTS =======================================
-
-RADIUS = 100
-
 
 class EndOfGame(Exception):
     pass
@@ -62,11 +53,9 @@ class VocePerdeu(EndOfGame):
     def accion(self):
         estado.mensaje(self.imagen_perdiste)
 
-
-
 class GrossiniSprite(pygame.sprite.Sprite):
     SPEED = FBM_SPEED
-    imagenes = [ pygame.image.load("images/zeek{}.png".format(n)).convert_alpha() for n in range(12) ]
+    imagenes = [ pygame.image.load("images/zeek%d.png"%n).convert_alpha() for n in range(12) ]
     image = imagenes[0]
     aplauso = pygame.mixer.Sound("sounds/aplauso.ogg")
 
@@ -82,6 +71,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
         arriba = (0, -1),
         abajo = (0, 1),
     )
+
     def __init__(self):
         self.hundido = False
         pygame.sprite.Sprite.__init__(self)
@@ -304,100 +294,51 @@ class Estado:
         if self.vidas == 0:
             raise VocePerdeu()
 
-class main:
-    def __init__(self):
-        import paladict
-        dic = paladict.PalaDict('bra')
+def main(language="bra"):
+    import paladict
+    dic = paladict.PalaDict(language)
 
-        global display
-        display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
-        global estado
-        estado = Estado(dic)
-        
-   
-        #Comienza el juego
-        playing = True
-        clock = pygame.time.Clock()
-        
-        #musica.play(-1)
+    global display
+    display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
+    global estado
+    estado = Estado(dic)
+    #Comienza el juego
+    playing = True
+    clock = pygame.time.Clock()
     
-        while playing:
-            clock.tick(20)
-            event = pygame.event.poll()
-            if event.type == QUIT:
+    #musica.play(-1)
+
+    while playing:
+        clock.tick(20)
+        event = pygame.event.poll()
+        if event.type == QUIT:
+            playing = False
+            pygame.quit()
+            sys.exit()
+        elif event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
                 playing = False
-                pygame.quit()
-                sys.exit()
-            elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    playing = False
-                elif event.key in [K_UP, K_KP8, K_KP9]:
-                    estado.grossini.mirar("arriba")
-                elif event.key in [K_DOWN, K_KP2, K_KP3]:
-                    estado.grossini.mirar("abajo")
-                elif event.key in [K_LEFT, K_KP4, K_KP7]:
-                    estado.grossini.mirar("izquierda")
-                elif event.key in [K_RIGHT, K_KP6, K_KP1]:
-                    estado.grossini.mirar("derecha")
-            try:
-                estado.step()
-            except EndOfGame as e:
-                e.accion()
-                break
+            elif event.key in [K_UP, K_KP8, K_KP9]:
+                estado.grossini.mirar("arriba")
+            elif event.key in [K_DOWN, K_KP2, K_KP3]:
+                estado.grossini.mirar("abajo")
+            elif event.key in [K_LEFT, K_KP4, K_KP7]:
+                estado.grossini.mirar("izquierda")
+            elif event.key in [K_RIGHT, K_KP6, K_KP1]:
+                estado.grossini.mirar("derecha")
+        try:
+            estado.step()
+        except EndOfGame as e:
+            e.accion()
+            break
 
 
-            estado.dibujar(playing_area)
-            pygame.display.flip()
+        estado.dibujar(playing_area)
+        pygame.display.flip()
 
-        #musica.stop()
+    #musica.stop()
+
+if __name__ == "__main__":
+    main()
 
 
-    def run(self):
-        self.running = True
-
-        screen = pygame.display.get_surface()
-        width = screen.get_width()
-        height = screen.get_height()
-
-        dirty = []
-        dirty.append(pygame.draw.rect(screen, (255, 255, 255),
-                                      pygame.Rect(0, 0, width, height)))
-        pygame.display.update(dirty)
-
-        while self.running:
-            dirty = []
-
-            # Pump GTK messages.
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-            if not self.running:
-                break
-
-            # Pump PyGame messages.
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return
-                elif event.type == pygame.VIDEORESIZE:
-                    pygame.display.set_mode(event.size, pygame.RESIZABLE)
-                    width = screen.get_width()
-                    height = screen.get_height()
-                    dirty.append(pygame.draw.rect(screen, (255, 255, 255),
-                                                  pygame.Rect(0, 0,
-                                                              width, height)))
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        self.direction = -1
-                    elif event.key == pygame.K_RIGHT:
-                        self.direction = 1
-
-            
-
-    """
-
-# This function is called when the game is run directly from the command line:
-# ./TestGame.py
-"""
-
-if __name__ == '__main__':
-    a = main()
-    a.run()
