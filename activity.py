@@ -19,16 +19,16 @@ import sugargame.canvas
 
 import TestGame
 
-
 class activity(Activity):
 
     def __init__(self, handle):
         Activity.__init__(self, handle)
 
         self.paused = False
-        import pdb
+        
         # Create the game instances
         self.game = TestGame
+        
         self.game.canvas = sugargame.canvas.PygameCanvas(
                 self,
                 main=self.game.main,

@@ -23,8 +23,9 @@ from pygame.locals import *
 import gettext
 
 #Inicializamos pygame y sonido
-pygame.mixer.pre_init(44100, -16, False)
 pygame.init()
+pygame.mixer.pre_init(44100, -16, False)
+
 
 # Definimos la pantalla
 info = pygame.display.Info()
