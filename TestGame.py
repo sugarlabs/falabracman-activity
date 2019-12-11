@@ -298,8 +298,8 @@ def main(language="bra"):
     import paladict
     dic = paladict.PalaDict(language)
 
-    global display
-    display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
+    #global display
+    #display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
     global estado
     estado = Estado(dic)
     #Comienza el juego
