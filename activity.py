@@ -26,9 +26,11 @@ class activity(Activity):
         Activity.__init__(self, handle)
         
         self.paused = False
+
         
         # Create the game instances
         self.game = TestGame
+        self.build_toolbar()
         self.game.canvas = sugargame.canvas.PygameCanvas(
                 self,
                 main=self.game.main,
@@ -36,7 +38,7 @@ class activity(Activity):
         self.set_canvas(self.game.canvas)
         self.game.canvas.grab_focus()
         # Build the activity toolbar.
-        self.build_toolbar()
+        
 
         # Build the Pygame canvas and start the game running
         # (self.game.run is called when the activity constructor
@@ -55,8 +57,9 @@ class activity(Activity):
         toolbar_box.toolbar.insert(activity_button, -1)
         activity_button.show()
 
-
-
+    def get_preview(self):
+        ''' Custom preview code to get image from pygame. '''
+        return self.game.canvas.get_preview()
 
 
         

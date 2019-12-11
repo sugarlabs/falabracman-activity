@@ -33,7 +33,9 @@ ALTURA_BARRA = 150
 
 
 def main(language="bra"):
-    from init import screen
+    screen = pygame.display.get_surface()
+    print("SCREEN:", screen)
+
     screen_width = screen.get_rect().width
     screen_height = screen.get_rect().height
 
