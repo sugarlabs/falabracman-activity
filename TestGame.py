@@ -394,7 +394,7 @@ class main:
 
 # This function is called when the game is run directly from the command line:
 # ./TestGame.py
-
+"""
 
 if __name__ == '__main__':
     main()
