@@ -307,18 +307,20 @@ class Estado:
 class main:
     def __init__(self):
         import paladict
-        dic = paladict.PalaDict(language)
+        dic = paladict.PalaDict('bra')
 
         global display
         display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
         global estado
         estado = Estado(dic)
+        
+    def play(self):
         #Comienza el juego
         playing = True
         clock = pygame.time.Clock()
         
         #musica.play(-1)
-
+    
         while playing:
             clock.tick(20)
             event = pygame.event.poll()
@@ -397,4 +399,5 @@ class main:
 """
 
 if __name__ == '__main__':
-    main()
+    a = main()
+    a.run()

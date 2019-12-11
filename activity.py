@@ -78,7 +78,7 @@ class activity(Activity):
     def _pause_play_cb(self, button):
         # Pause or unpause the game.
         self.paused = not self.paused
-        self.game.set_paused(self.paused)
+        self.game.play()
 
         # Update the button to show the next action.
         if self.paused:
