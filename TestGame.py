@@ -24,7 +24,7 @@ from pygame.locals import *
 from random import randrange
 import random
 import hollow
-
+from gi.repository import Gtk
 from config import *
 import sys
 import pdb
@@ -35,12 +35,12 @@ ALTURA_BARRA = 150
 def main(language="bra"):
     pygame.mixer.init()
     screen = pygame.display.get_surface()
-    screen = pygame.display.set_mode(screen)
+    #screen = pygame.display.set_mode(screen)
     print("SCREEN:", screen)
-
+    from init import screen
     screen_width = screen.get_rect().width
     screen_height = screen.get_rect().height
-
+    pygame.display.set_mode([screen_width, screen_height])
     area_barra = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,0), (SCREEN_WIDTH, ALTURA_BARRA) )
     playing_area = screen.subsurface( ((screen_width-SCREEN_WIDTH)/2,ALTURA_BARRA), (SCREEN_WIDTH, screen_height - ALTURA_BARRA) )
     '''
@@ -324,6 +324,14 @@ def main(language="bra"):
     #musica.play(-1)
 
     while playing:
+        while Gtk.events_pending():
+            Gtk.main_iteration() # Pump PyGame events 
+        for event in pygame.event.get(): 
+            if event.type == pygame.QUIT: 
+                return 
+            elif event.type == pygame.VIDEORESIZE: 
+                pygame.display.set_mode(event.size, pygame.RESIZABLE)
+
         clock.tick(20)
         event = pygame.event.poll()
         if event.type == QUIT:
