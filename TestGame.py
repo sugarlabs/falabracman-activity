@@ -35,6 +35,7 @@ ALTURA_BARRA = 150
 def main(language="bra"):
     pygame.mixer.init()
     screen = pygame.display.get_surface()
+    screen = pygame.display.set_mode(screen)
     print("SCREEN:", screen)
 
     screen_width = screen.get_rect().width
