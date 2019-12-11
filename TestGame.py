@@ -39,7 +39,7 @@ def main(language="bra"):
         if screen:
             pass
     except NameError:
-         self.screen = pygame.display.get_surface()
+         screen = pygame.display.get_surface()
     font = pygame.font.Font("fonts/VeraBd.ttf", 70)
     aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
     musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
