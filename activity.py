@@ -28,11 +28,10 @@ class activity(Activity):
         self.paused = False
 
         # Create the game instances
-        import menu
-        self.game = menu
+        self.game = TestGame.main
         self.game.canvas = sugargame.canvas.PygameCanvas(
                 self,
-                main=self.game.make,
+                main=self.game.run,
                 modules=[pygame.display, pygame.font])
         self.set_canvas(self.game.canvas)
         self.game.canvas.grab_focus()

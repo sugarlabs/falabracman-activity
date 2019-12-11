@@ -25,6 +25,7 @@ import locale
 import os
 import config
 
+
 gettext.bindtextdomain('falabracman', 'data/locales')
 gettext.textdomain('falabracman')
 
@@ -46,7 +47,7 @@ def mostrarImagen(imagen, duracion):
         pygame.display.flip()
         clock.tick(10)
 
-class Menu:
+class Menu(activity.Activity):
     font = pygame.font.Font('fonts/ds_moster.ttf', 48)
     fondo = pygame.image.load("images/menu.jpg").convert()
     colorEncendido = (200,0,0)

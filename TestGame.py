@@ -314,7 +314,7 @@ class main:
         global estado
         estado = Estado(dic)
         
-    def play(self):
+   
         #Comienza el juego
         playing = True
         clock = pygame.time.Clock()
