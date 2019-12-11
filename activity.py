@@ -5,7 +5,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import pygame
-
+import sugargame
+from sugargame.canvas import PygameCanvas
 from sugar3.activity.activity import Activity
 from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.activity.widgets import ActivityToolbarButton
@@ -26,9 +27,15 @@ class activity(Activity):
 
         self.paused = False
 
-        # Create the game instance.
-        self.game = TestGame.main()
-
+        # Create the game instances
+        import menu
+        self.game = menu
+        self.game.canvas = sugargame.canvas.PygameCanvas(
+                self,
+                main=self.game.make,
+                modules=[pygame.display, pygame.font])
+        self.set_canvas(self.game.canvas)
+        self.game.canvas.grab_focus()
         # Build the activity toolbar.
         self.build_toolbar()
 
