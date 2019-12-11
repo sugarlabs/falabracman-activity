@@ -304,78 +304,52 @@ class Estado:
         if self.vidas == 0:
             raise VocePerdeu()
 
-def main(language="bra"):
-    import paladict
-    dic = paladict.PalaDict(language)
-
-    global display
-    display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
-    global estado
-    estado = Estado(dic)
-    #Comienza el juego
-    playing = True
-    clock = pygame.time.Clock()
-    
-    #musica.play(-1)
-
-    while playing:
-        clock.tick(20)
-        event = pygame.event.poll()
-        if event.type == QUIT:
-            playing = False
-            pygame.quit()
-            sys.exit()
-        elif event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
-                playing = False
-            elif event.key in [K_UP, K_KP8, K_KP9]:
-                estado.grossini.mirar("arriba")
-            elif event.key in [K_DOWN, K_KP2, K_KP3]:
-                estado.grossini.mirar("abajo")
-            elif event.key in [K_LEFT, K_KP4, K_KP7]:
-                estado.grossini.mirar("izquierda")
-            elif event.key in [K_RIGHT, K_KP6, K_KP1]:
-                estado.grossini.mirar("derecha")
-        try:
-            estado.step()
-        except EndOfGame as e:
-            e.accion()
-            break
-
-
-        estado.dibujar(playing_area)
-        pygame.display.flip()
-
-    #musica.stop()
-
-
-    """
+class main:
     def __init__(self):
-        # Set up a clock for managing the frame rate.
-        self.clock = pygame.time.Clock()
+        import paladict
+        dic = paladict.PalaDict(language)
 
-        self.x = -RADIUS
-        self.y = RADIUS
+        global display
+        display = Display(area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
+        global estado
+        estado = Estado(dic)
+        #Comienza el juego
+        playing = True
+        clock = pygame.time.Clock()
+        
+        #musica.play(-1)
 
-        self.vx = RADIUS // 10
-        self.vy = 0
+        while playing:
+            clock.tick(20)
+            event = pygame.event.poll()
+            if event.type == QUIT:
+                playing = False
+                pygame.quit()
+                sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    playing = False
+                elif event.key in [K_UP, K_KP8, K_KP9]:
+                    estado.grossini.mirar("arriba")
+                elif event.key in [K_DOWN, K_KP2, K_KP3]:
+                    estado.grossini.mirar("abajo")
+                elif event.key in [K_LEFT, K_KP4, K_KP7]:
+                    estado.grossini.mirar("izquierda")
+                elif event.key in [K_RIGHT, K_KP6, K_KP1]:
+                    estado.grossini.mirar("derecha")
+            try:
+                estado.step()
+            except EndOfGame as e:
+                e.accion()
+                break
 
-        self.paused = False
-        self.direction = 1
-    
 
-    def set_paused(self, paused):
-        self.paused = paused
+            estado.dibujar(playing_area)
+            pygame.display.flip()
 
-    # Called to save the state of the game to the Journal.
-    def write_file(self, file_path):
-        pass
+        #musica.stop()
 
-    # Called to load the state of the game from the Journal.
-    def read_file(self, file_path):
-        pass
 
-    # The main game loop.
     def run(self):
         self.running = True
 
@@ -414,37 +388,8 @@ def main(language="bra"):
                     elif event.key == pygame.K_RIGHT:
                         self.direction = 1
 
-            # Move the ball
-            if not self.paused:
+            
 
-                # Erase the ball
-                dirty.append(pygame.draw.circle(screen, (255, 255, 255),
-                                                (self.x, self.y), RADIUS))
-
-                self.x += self.vx * self.direction
-                if self.direction == 1 and self.x > width - RADIUS:
-                    self.x = width - RADIUS
-                    self.direction = -1
-                elif self.direction == -1 and self.x < RADIUS:
-                    self.x = RADIUS
-                    self.direction = 1
-
-                self.y += self.vy
-                if self.y > height - RADIUS:
-                    self.y = height - RADIUS
-                    self.vy = -self.vy
-
-                self.vy += 5
-
-                # Draw the ball
-                dirty.append(pygame.draw.circle(screen, (192, 0, 0),
-                                                (self.x, self.y), RADIUS))
-
-            # Update Display
-            pygame.display.update(dirty)
-
-            # Try to stay at 30 FPS
-            self.clock.tick(30)
     """
 
 # This function is called when the game is run directly from the command line:

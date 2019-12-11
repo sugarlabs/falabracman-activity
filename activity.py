@@ -27,7 +27,7 @@ class activity(Activity):
         self.paused = False
 
         # Create the game instance.
-        self.game = TestGame.Display()
+        self.game = TestGame.main()
 
         # Build the activity toolbar.
         self.build_toolbar()
