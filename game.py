@@ -115,7 +115,7 @@ class Collisionable(pygame.sprite.Sprite):
 
 def armarLetras(color1, color2):
     d = {}
-    for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZÑÃÇÕ*":
+    for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZï¿½ï¿½ï¿½ï¿½*":
         d[l] = hollow.textOutline(font, l, color1, color2)
     return d
     
@@ -326,7 +326,7 @@ def main(language="bra"):
                 estado.grossini.mirar("derecha")
         try:
             estado.step()
-        except EndOfGame, e:
+        except EndOfGame as e:
             e.accion()
             break
 

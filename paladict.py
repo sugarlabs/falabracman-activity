@@ -49,5 +49,5 @@ class PalaDict:
 
 if __name__ == "__main__":
     e=PalaDict("bra")
-    print e.getRandomWordByCategory()
+    print(e.getRandomWordByCategory())
     #print e.getDictionary()
