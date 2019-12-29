@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 #Copyright (C) 2008 by Achuras Experience
-#
+#Copyright (C) 2019 by Srevin Saju (Python3 + Sugargame)
+
 #This file is part of Falabracman
 #
 #Falabracman is free software: you can redistribute it and/or modify
@@ -20,19 +21,17 @@ import pygame
 from pygame.locals import *
 from random import randrange
 import random
+import gettext 
 import hollow
 from config import *
 import gi
+import sys
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-
-
 
 # CONSTANTS
 FBM_SPEED = 15
 ALTURA_BARRA = 150
-
-
 
 # --------------------------
 # DISP
@@ -47,13 +46,13 @@ class Display:
     def setDisplay(self, palabra):
         self.palabra = palabra
         self.encendidas = 0
-        self.dibujar()
+        self.draw()
 
     def setVidas(self, vidas):
         self.vidas = vidas
-        self.dibujar()
+        self.draw()
 
-    def dibujar(self):
+    def draw(self):
         self.parent.area_barra.blit(self.parent.barra, (0,0))
         w = 0
         for n, l in enumerate(self.palabra):
@@ -71,9 +70,12 @@ class Display:
     
     def encender(self):
         self.encendidas += 1
-        self.dibujar()
+        self.draw()
 
 
+# ================================
+# EXCEPTIONS INSTANCE 
+# ================================
 class EndOfGame(Exception):
     pass
 
@@ -86,6 +88,7 @@ class YouWon(EndOfGame):
     def accion(self):
         self.parent.aplausos.play()
         self.parent.status.message(self.imagen_ganaste)
+        pygame.time.delay(3000)
 
 
 class YouLost(EndOfGame):
@@ -95,10 +98,12 @@ class YouLost(EndOfGame):
 
     def accion(self):
         self.parent.status.message(self.imagen_perdiste)
+        pygame.time.delay(3000)
 
 
 # ================================
 # SPRITE INSTANCE 
+# ================================
 class GrossiniSprite(pygame.sprite.Sprite):
 
     def __init__(self, parent):
@@ -183,10 +188,12 @@ class LetterSprite(Collisionable):
         Collisionable.__init__(self, self.parent, grossini)
 
 
+# ==================================
+# LETTER SPRITE SOUND
+# ==================================
 class LetterSprite_Sound:
     def __init__(self):
         self.sound =  pygame.mixer.Sound("sounds/money.ogg")
-
 
 
 # ==================================
@@ -199,6 +206,10 @@ class Lago(Collisionable):
         self.image = random.choice(self.imagenes)
         Collisionable.__init__(self, parent, otros)
 
+
+# ==================================
+# IMPACT COLLISION SPRITE SOUND
+# ==================================
 class Lago_Sound:
     def __init__(self):
         self.sound = pygame.mixer.Sound("sounds/splash.ogg")
@@ -230,30 +241,30 @@ class Lagos(pygame.sprite.Group):
 # ==================================
 # LEVEL OBJECT
 # ==================================
-class Nivel:
+class Level:
     
     def __init__(self, parent, numero, dic, grossini, groupsinni):
         self.parent = parent
-        self.base_fondo = pygame.image.load("images/fondo.jpg").convert()
-        self.fondo = self.base_fondo.copy()
+        self.base_background = pygame.image.load("images/fondo.jpg").convert()
+        self.background = self.base_background.copy()
         self.finNivel = False
         self.palabras = [ dic.getRandomWordByCategory().upper().encode("iso8859-1") for n in range(numero) ]
         self.numero = numero
         self.grupoLagos = Lagos(self.parent, 5, groupsinni)
         self.groupsinni = groupsinni
-        self.grupoLagos.draw(self.fondo)
+        self.grupoLagos.draw(self.background)
         self.nuevaPalabra(grossini)
-        self.parent.playing_area.blit(self.fondo, (0,0))
+        self.parent.playing_area.blit(self.background, (0,0))
 
     def nuevaPalabra(self, grossini):
         self.palabra = self.palabras.pop()
         self.grupoLetras = Palabra(self.parent, self.palabra, self.groupsinni, self.grupoLagos)
         self.encontradas = []
         self.parent.display.setDisplay(self.palabra)
-        self.parent.playing_area.blit(self.fondo, (0,0))
+        self.parent.playing_area.blit(self.background, (0,0))
 
     def draw(self, area):
-        self.grupoLetras.clear(area, self.fondo)  
+        self.grupoLetras.clear(area, self.background)  
         self.grupoLetras.draw(area)  
 
     def hayMasPalabras(self):
@@ -299,7 +310,7 @@ class Status:
 
     def resetGrossini(self):
         if self.groupsinni is not None:
-            self.groupsinni.clear(self.parent.playing_area, self.nivel.fondo)
+            self.groupsinni.clear(self.parent.playing_area, self.nivel.background)
 
         self.grossini = GrossiniSprite(self.parent)
         self.grossini.init()
@@ -309,11 +320,11 @@ class Status:
 
     def avanzarNivel(self):
         self.nroNivel += 1
-        self.nivel = Nivel(self.parent, self.nroNivel, self.dic, self.grossini, self.groupsinni)
+        self.nivel = Level(self.parent, self.nroNivel, self.dic, self.grossini, self.groupsinni)
         self.parent.aplausos.play()
 
     def draw(self, area):
-        self.groupsinni.clear(area, self.nivel.fondo)
+        self.groupsinni.clear(area, self.nivel.background)
         self.nivel.draw(area)
         self.groupsinni.draw(area)
 
@@ -322,9 +333,11 @@ class Status:
         self.parent.display.setVidas(vidas)
 
     def message(self, msg):
+        clock = pygame.time.Clock()
         self.parent.playing_area.blit(msg, msg.get_rect(center = self.parent.playing_area.get_rect().center))
         pygame.display.flip()
-        pygame.time.delay(4000)
+        clock.tick(4)
+
 
     def step(self):
         self.grossini.step()
@@ -341,15 +354,120 @@ class Status:
             raise YouLost(self.parent)
 
 
-
 # ==================================
 # PYGAME MAIN 
 # ==================================
 class Falabracman:
 
     def __init__(self):
-        # Nothing to do.
+        self.menu_to_game_loop = True
+        self.load_game_bool = True
         pass
+    
+    # =============== < MENU > =================
+    def continue_to_game(self):
+        self.exit = True
+
+    def update_menu(self):
+        self.imagenes = []
+        for texto, funcion in self.options:
+            texto_traducido = gettext.gettext(texto)
+            print(texto, gettext.gettext(texto))
+            imagen0 = self.font.render(texto_traducido, 1, self.colorApagado)
+            imagen1 = self.font.render(texto_traducido, 1, self.colorEncendido)
+            self.imagenes.append( [imagen0, imagen1] )
+        self.drawBackground()
+        self.drawOptions()
+        pygame.display.update()
+
+    def drawOptions(self):
+        # FIXME DO NOT HARDCODE COORDINATES
+        altura_de_opcion = 60
+        x = 405
+        y = 405
+        
+        for indice, imagenes in enumerate(self.imagenes):
+            posicion = (x, y + altura_de_opcion * indice)
+            area = imagenes[0].get_rect(topleft=posicion)
+            self.screen.blit(self.background, posicion, area)
+
+        for indice, imagenes in enumerate(self.imagenes):
+            if indice == self.seleccionado:
+                imagen = imagenes[1]
+            else:
+                imagen = imagenes[0]
+            posicion = (x, y + altura_de_opcion * indice)
+            self.screen.blit(imagen, posicion)
+        pygame.display.update()
+
+    def moverSeleccion(self, direccion):
+        self.seleccionado += direccion
+        # procura que el cursor esté entre las options permitidas
+        if self.seleccionado < 0:
+            self.seleccionado = 0
+        elif self.seleccionado > len(self.options) - 1:
+            self.seleccionado = len(self.options) - 1
+        self.sonido_menu.play() 
+        self.drawOptions()
+
+    def drawBackground(self):
+        left_padding = (self.screen.get_rect().width-SCREEN_WIDTH)/2
+        self.screen.blit(self.background, (left_padding, 0))
+
+    def exitDelMenu(self):
+        self.exit = True
+        pygame.quit()
+        sys.exit(0)
+
+    def show_credits(self):
+        self.show_image(self.imagen_presentacion, 4)
+        self.show_image(self.imagen_creditos, 20)
+        self.load_game_bool = False
+
+    def menu_init(self):
+        
+        self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
+        self.background = pygame.image.load("images/menu.jpg").convert()
+        self.colorEncendido = (200,0,0)
+        self.colorApagado = (0,0,0)
+        self.seleccionado = 0
+        
+        self.options = [
+            ("play", self.continue_to_game),
+            ("credits", self.show_credits),
+            ("quit", self.exitDelMenu)
+        ]
+        self.sonido_menu = pygame.mixer.Sound("sounds/menu.ogg")
+        self.update_menu()
+
+    def menu_run(self):
+        self.update_menu()
+        self.exit = False
+        while not self.exit:
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
+            e = pygame.event.poll()
+            if e.type == QUIT:
+                self.menu_to_game_loop = False
+                self.exit = True
+            if e.type == KEYDOWN:
+                if e.key in [K_UP, K_KP8]:
+                    self.moverSeleccion(-1)
+                elif e.key in [K_DOWN, K_KP2]:
+                    self.moverSeleccion(1)
+                elif e.key in [K_RETURN, K_KP7, K_KP1, K_KP3, K_KP9]:
+                    self.sonido_menu.play() 
+                    titulo, funcion = self.options[self.seleccionado]
+                    funcion()
+                    self.update_menu()
+                    break
+            
+            pygame.display.flip()
+        pygame.display.update()
+            
+        return 
+    # ============== < MENU > ================
 
     def dameLetra(self, dictLetras, letra):
         return dictLetras.get(letra, dictLetras["*"])
@@ -361,9 +479,70 @@ class Falabracman:
             d[l] = hollow.textOutline(self.font, l, color1, color2)
         return d
 
+    # Show Image TODO FIXME
+    def show_image(self, imagen, duracion):
+        self.screen.blit(imagen, imagen.get_rect(center=self.screen.get_rect().center))
+        ticks_final = pygame.time.get_ticks() + duracion * 1000
+        clock = pygame.time.Clock()
+        while pygame.time.get_ticks() < ticks_final:
+            
+            e = pygame.event.poll()
+            if e.type == KEYDOWN:
+                if e.key in [K_ESCAPE, K_SPACE, K_RETURN]:
+                    self.menu.sonido_menu.play()
+                    return
+            pygame.display.flip()
+            clock.tick(10)
+
+    def call_menu(self):
+        self.menu_init()
+        self.imagen_presentacion = pygame.image.load("images/splash.jpg").convert()
+        self.imagen_creditos = pygame.image.load("images/creditos.jpg").convert()
+        self.menu_run()
+        self.sonido_menu.play()
+
+    def game_instance (self, language):
+        import paladict
+        dic = paladict.PalaDict(language)
+        self.status = Status(self, dic)
+        #Comienza el juego
+        playing = True
+        clock = pygame.time.Clock()
+        while playing:
+            clock.tick(20)
+
+            # Pump GTK Messages
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
+            event = pygame.event.poll()
+            if event.type == QUIT:
+                playing = False
+                self.menu_to_game_loop = False
+                pygame.quit()
+                sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    playing = False
+                    self.menu_to_game_loop = False
+                elif event.key in [K_UP, K_KP8, K_KP9]:
+                    self.status.grossini.mirar("arriba")
+                elif event.key in [K_DOWN, K_KP2, K_KP3]:
+                    self.status.grossini.mirar("abajo")
+                elif event.key in [K_LEFT, K_KP4, K_KP7]:
+                    self.status.grossini.mirar("izquierda")
+                elif event.key in [K_RIGHT, K_KP6, K_KP1]:
+                    self.status.grossini.mirar("derecha")
+            try:
+                self.status.step()
+            except EndOfGame as e:
+                e.accion()
+                break
+            pygame.display.update()
+            self.status.draw(self.playing_area)
+
     # Pygame canonical run
     def run(self, language="bra"):
-
         pygame.init()
         pygame.display.flip()
         self.screen = pygame.display.get_surface()
@@ -380,50 +559,22 @@ class Falabracman:
         self.letrasEncendidas = self.armarLetras(BASECOLOR, OUTLINECOLOR)
         self.letrasApagadas = self.armarLetras(OUTLINECOLOR, BASECOLOR)
         self.display = Display(self, self.area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
+        pygame.mouse.set_visible(False)
 
+        while self.menu_to_game_loop:
+            # Override the variable set byt credits for load_game_bool
+            self.load_game_bool = True
+            # Load the menu instance
+            self.call_menu()
+            print(self.load_game_bool)
+            # Load the game instance if it proceeds,
+            # check the option selected is to show credits
+            if self.load_game_bool:
+                self.game_instance(language)
+            else:
+                self.load_game_bool = True
 
-        
-        import paladict
-        dic = paladict.PalaDict(language)
-
-        self.status = Status(self, dic)
-        #Comienza el juego
-        playing = True
-        clock = pygame.time.Clock()
-        while playing:
-            clock.tick(20)
-
-            # Pump GTK Messages
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-
-            event = pygame.event.poll()
-            if event.type == QUIT:
-                playing = False
-                pygame.quit()
-                sys.exit()
-            elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    playing = False
-                elif event.key in [K_UP, K_KP8, K_KP9]:
-                    self.status.grossini.mirar("arriba")
-                elif event.key in [K_DOWN, K_KP2, K_KP3]:
-                    self.status.grossini.mirar("abajo")
-                elif event.key in [K_LEFT, K_KP4, K_KP7]:
-                    self.status.grossini.mirar("izquierda")
-                elif event.key in [K_RIGHT, K_KP6, K_KP1]:
-                    self.status.grossini.mirar("derecha")
-            try:
-                self.status.step()
-            except EndOfGame as e:
-                e.accion()
-                break
-            pygame.display.update()
-            self.status.draw(self.playing_area)
-            
-
-        #musica.stop()
-
+# SCRIPT RUNNER
 if __name__ == "__main__":
     fbman = Falabracman()
     fbman.run()
