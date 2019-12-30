@@ -639,7 +639,8 @@ class FalabracmanGame:
         self.musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
         grossini_instance = GrossiniSprite(self)
         self.imagenVida = grossini_instance.imagenes[0]
-        self.barra = pygame.image.load("images/barra.jpg").convert_alpha()
+        self.barra = pygame.transform.scale(pygame.image.load("images/barra.jpg").convert_alpha(), (self.screen_width, ALTURA_BARRA))
+        
         self.letrasEncendidas = self.armarLetras(BASECOLOR, OUTLINECOLOR)
         self.letrasApagadas = self.armarLetras(OUTLINECOLOR, BASECOLOR)
         self.display = Display(self, self.area_barra.subsurface(
