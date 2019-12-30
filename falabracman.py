@@ -26,7 +26,7 @@ import gettext
 import hollow
 from config import *
 import gi
-import sys
+import sys, os
 gi.require_version('Gtk', '3.0')
 
 # CONSTANTS
@@ -437,6 +437,54 @@ class Falabracman:
         pygame.quit()
         sys.exit(0)
 
+    def options_menu_init(self):
+        self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
+        self.background = pygame.image.load("images/menu.jpg").convert()
+        self.colorEncendido = (200, 0, 0)
+        self.colorApagado = (0, 0, 0)
+        self.seleccionado = 0
+        self.options = [
+            ("English", self.set_language_en),
+            ("Portugese", self.set_language_bra),
+            ("Espanol", self.set_language_esp),
+            ("Return", self.return_back_to_menu)
+        ]
+        self.sonido_menu = pygame.mixer.Sound("sounds/menu.ogg")
+        self.update_menu()
+
+    
+    def show_options_menu(self):
+        self.options_menu_init()
+        self.imagen_presentacion = pygame.image.load(
+            "images/splash.jpg").convert()
+        self.imagen_creditos = pygame.image.load(
+            "images/creditos.jpg").convert()
+        self.menu_run()
+        self.sonido_menu.play()
+
+    # Set langs in
+    def set_language_en(self):
+        self.language = 'en'
+        self.load_game_bool = False
+        pass
+
+    def set_language_bra(self):
+        self.language = 'bra'
+        os.environ["LANG"]="pt_BR"
+        self.load_game_bool = False
+        pass
+
+    def set_language_esp(self):
+        self.language = 'esp'
+        os.environ["LANG"]="es_AR"
+        self.load_game_bool = False
+        pass
+
+    def return_back_to_menu(self):
+        self.load_game_bool = False
+        pass
+    # Set langs out
+
     def show_credits(self):
         self.show_image(self.imagen_presentacion, 4)
         self.show_image(self.imagen_creditos, 20)
@@ -451,6 +499,7 @@ class Falabracman:
         self.options = [
             ("play", self.continue_to_game),
             ("credits", self.show_credits),
+            ("options", self.show_options_menu),
             ("quit", self.exitDelMenu)
         ]
         self.sonido_menu = pygame.mixer.Sound("sounds/menu.ogg")
@@ -519,9 +568,9 @@ class Falabracman:
         self.menu_run()
         self.sonido_menu.play()
 
-    def game_instance(self, language):
+    def game_instance(self):
         import paladict
-        dic = paladict.PalaDict(language)
+        dic = paladict.PalaDict(self.language)
         self.status = Status(self, dic)
         # Comienza el juego
         playing = True
@@ -560,7 +609,9 @@ class Falabracman:
             self.status.draw(self.playing_area)
 
     # Pygame canonical run
-    def run(self, language="en"):
+    def run(self):
+        # Initialize assuming language = en
+        self.language = 'en'
         pygame.init()
         pygame.display.flip()
         self.screen = pygame.display.get_surface()
@@ -593,7 +644,7 @@ class Falabracman:
             # Load the game instance if it proceeds,
             # check the option selected is to show credits
             if self.load_game_bool:
-                self.game_instance(language)
+                self.game_instance()
             else:
                 self.load_game_bool = True
 
