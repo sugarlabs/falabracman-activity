@@ -117,7 +117,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
         self.parent = parent
         self.SPEED = FBM_SPEED
         self.imagenes = [pygame.transform.scale(pygame.image.load(
-            "images/zeek%d.png" % n).convert_alpha(), (int(0.10*self.parent.screen_width), int(0.12*self.parent.screen_height))) for n in range(12)]
+            "images/zeek%d.png" % n).convert_alpha(), (int(0.8*self.parent.screen_width), int(0.12*self.parent.screen_height))) for n in range(12)]
 
     def init(self):
         self.image = self.imagenes[0]
