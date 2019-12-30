@@ -28,6 +28,7 @@ from config import *
 import gi
 import sys
 import os
+from gi.repository import Gdk
 gi.require_version('Gtk', '3.0')
 
 # CONSTANTS
@@ -376,7 +377,7 @@ class Status:
 # ==================================
 # PYGAME MAIN
 # ==================================
-class Falabracman:
+class FalabracmanGame:
 
     def __init__(self):
         self.menu_to_game_loop = True
@@ -430,7 +431,7 @@ class Falabracman:
         self.drawOptions()
 
     def drawBackground(self):
-        left_padding = (self.screen.get_rect().width-SCREEN_WIDTH)/2
+        left_padding = (self.screen.get_rect().width-self.screen_width)/2
         self.screen.blit(self.background, (left_padding, 0))
 
     def exitDelMenu(self):
@@ -588,6 +589,8 @@ class Falabracman:
                 self.menu_to_game_loop = False
                 pygame.quit()
                 sys.exit()
+            elif event.type == pygame.VIDEORESIZE:
+                pygame.display.set_mode(event.size, pygame.RESIZABLE)
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     playing = False
@@ -618,9 +621,9 @@ class Falabracman:
         self.screen_width = self.screen.get_rect().width
         self.screen_height = self.screen.get_rect().height
         self.area_barra = self.screen.subsurface(
-            ((self.screen_width-SCREEN_WIDTH)/2, 0), (SCREEN_WIDTH, ALTURA_BARRA))
+            ((self.screen_width-self.screen_width)/2, 0), (self.screen_width, ALTURA_BARRA))
         self.playing_area = self.screen.subsurface(
-            ((self.screen_width-SCREEN_WIDTH)/2, ALTURA_BARRA), (SCREEN_WIDTH, self.screen_height - ALTURA_BARRA))
+            ((self.screen_width-self.screen_width)/2, ALTURA_BARRA), (self.screen_width, self.screen_height - ALTURA_BARRA))
         self.font = pygame.font.Font("fonts/VeraBd.ttf", 70)
         self.aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
         self.musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
@@ -630,7 +633,7 @@ class Falabracman:
         self.letrasEncendidas = self.armarLetras(BASECOLOR, OUTLINECOLOR)
         self.letrasApagadas = self.armarLetras(OUTLINECOLOR, BASECOLOR)
         self.display = Display(self, self.area_barra.subsurface(
-            (50, 50), (SCREEN_WIDTH-100, 100)))
+            (50, 50), (self.screen_width-100, 100)))
         pygame.mouse.set_visible(False)
         self.imagen_presentacion = pygame.image.load(
             "images/splash.jpg").convert()
@@ -651,5 +654,5 @@ class Falabracman:
 
 # SCRIPT RUNNER
 if __name__ == "__main__":
-    fbman = Falabracman()
+    fbman = FalabracmanGame()
     fbman.run()

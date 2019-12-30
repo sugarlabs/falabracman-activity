@@ -5,8 +5,9 @@ from sugar3.graphics.toolbutton import ToolButton
 from sugar3.activity.widgets import ActivityToolbarButton
 from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.activity.activity import Activity
+from sugar3.graphics.style import GRID_CELL_SIZE
 import pygame
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from gettext import gettext as _
 
 import sys
@@ -25,7 +26,7 @@ class Falabracman(Activity):
         self.paused = False
 
         # Create the game instance.
-        self.game = falabracman.Falabracman()
+        self.game = falabracman.FalabracmanGame()
 
         # Build the activity toolbar.
         self.build_toolbar()
@@ -38,6 +39,10 @@ class Falabracman(Activity):
 
         # Note that set_canvas implicitly calls read_file when
         # resuming from the Journal.
+        w = Gdk.Screen.width()
+        h = Gdk.Screen.height() - GRID_CELL_SIZE
+
+        self._pygamecanvas.set_size_request(w, h)
         self.set_canvas(self._pygamecanvas)
         self._pygamecanvas.grab_focus()
 
