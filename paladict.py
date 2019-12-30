@@ -48,6 +48,6 @@ class PalaDict:
 
 
 if __name__ == "__main__":
-    e=PalaDict("bra")
+    e=PalaDict("en")
     print(e.getRandomWordByCategory())
     #print e.getDictionary()
