@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #Copyright (C) 2008 by Achuras Experience
 #Copyright (C) 2019 by Srevin Saju (Python3 + Sugargame)
 
@@ -489,7 +489,7 @@ class Falabracman:
             e = pygame.event.poll()
             if e.type == KEYDOWN:
                 if e.key in [K_ESCAPE, K_SPACE, K_RETURN]:
-                    self.menu.sonido_menu.play()
+                    self.sonido_menu.play()
                     return
             pygame.display.flip()
             clock.tick(10)
@@ -542,7 +542,7 @@ class Falabracman:
             self.status.draw(self.playing_area)
 
     # Pygame canonical run
-    def run(self, language="bra"):
+    def run(self, language="en"):
         pygame.init()
         pygame.display.flip()
         self.screen = pygame.display.get_surface()
