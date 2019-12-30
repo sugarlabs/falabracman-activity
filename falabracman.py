@@ -561,6 +561,7 @@ class Falabracman:
         self.display = Display(self, self.area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
         pygame.mouse.set_visible(False)
         self.imagen_presentacion = pygame.image.load("images/splash.jpg").convert()
+        self.show_image(self.imagen_presentacion, 3)
         while self.menu_to_game_loop:
             # Override the variable set byt credits for load_game_bool
             self.load_game_bool = True
