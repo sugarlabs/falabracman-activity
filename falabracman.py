@@ -197,7 +197,6 @@ class LetterSprite(Collisionable):
         self.sound = pygame.mixer.Sound("sounds/money.ogg")
 
     def spritefx(self, grossini, letra):
-        print(self.parent.letrasEncendidas)
         self.image = self.parent.dameLetra(self.parent.letrasEncendidas, letra)
         self.letra = letra
         Collisionable.__init__(self, self.parent, grossini)
@@ -404,7 +403,6 @@ class FalabracmanGame:
         self.imagenes = []
         for texto, funcion in self.options:
             texto_traducido = gettext.gettext(texto)
-            print(texto, gettext.gettext(texto))
             imagen0 = self.font.render(texto_traducido, 1, self.colorApagado)
             imagen1 = self.font.render(texto_traducido, 1, self.colorEncendido)
             self.imagenes.append([imagen0, imagen1])
