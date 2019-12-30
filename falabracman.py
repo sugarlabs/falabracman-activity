@@ -26,7 +26,8 @@ import gettext
 import hollow
 from config import *
 import gi
-import sys, os
+import sys
+import os
 gi.require_version('Gtk', '3.0')
 
 # CONSTANTS
@@ -452,7 +453,6 @@ class Falabracman:
         self.sonido_menu = pygame.mixer.Sound("sounds/menu.ogg")
         self.update_menu()
 
-    
     def show_options_menu(self):
         self.options_menu_init()
         self.imagen_presentacion = pygame.image.load(
@@ -470,13 +470,13 @@ class Falabracman:
 
     def set_language_bra(self):
         self.language = 'bra'
-        os.environ["LANG"]="pt_BR"
+        os.environ["LANG"] = "pt_BR"
         self.load_game_bool = False
         pass
 
     def set_language_esp(self):
         self.language = 'esp'
-        os.environ["LANG"]="es_AR"
+        os.environ["LANG"] = "es_AR"
         self.load_game_bool = False
         pass
 
