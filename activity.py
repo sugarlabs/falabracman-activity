@@ -1,21 +1,21 @@
+import falabracman
+import sugargame.canvas
+from sugar3.activity.widgets import StopButton
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.activity import Activity
+import pygame
+from gi.repository import Gtk
 from gettext import gettext as _
 
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-import pygame
 
-from sugar3.activity.activity import Activity
-from sugar3.graphics.toolbarbox import ToolbarBox
-from sugar3.activity.widgets import ActivityToolbarButton
-from sugar3.graphics.toolbutton import ToolButton
-from sugar3.activity.widgets import StopButton
 
 sys.path.append('..')  # Import sugargame package from top directory.
-import sugargame.canvas
 
-import falabracman
 
 class Falabracman(Activity):
 
@@ -49,7 +49,7 @@ class Falabracman(Activity):
         activity_button = ActivityToolbarButton(self)
         toolbar_box.toolbar.insert(activity_button, -1)
         activity_button.show()
-        
+
         # Blank space (separator) and Stop button at the end:
 
         separator = Gtk.SeparatorToolItem()
@@ -62,7 +62,7 @@ class Falabracman(Activity):
         toolbar_box.toolbar.insert(stop_button, -1)
         stop_button.show()
         stop_button.connect('clicked', self._stop_cb)
-    
+
     def _stop_cb(self, arg=None):
         sys.exit()
 

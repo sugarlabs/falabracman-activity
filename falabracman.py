@@ -1,33 +1,33 @@
 # -*- coding: utf-8 -*-
-#Copyright (C) 2008 by Achuras Experience
-#Copyright (C) 2019 by Srevin Saju (Python3 + Sugargame)
+# Copyright (C) 2008 by Achuras Experience
+# Copyright (C) 2019 by Srevin Saju (Python3 + Sugargame)
 
-#This file is part of Falabracman
+# This file is part of Falabracman
 #
-#Falabracman is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#The Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# Falabracman is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# The Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#Falabracman is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# Falabracman is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
-#along with Falabracman.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Falabracman.  If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gtk
 import pygame
 from pygame.locals import *
 from random import randrange
 import random
-import gettext 
+import gettext
 import hollow
 from config import *
 import gi
 import sys
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 
 # CONSTANTS
 FBM_SPEED = 15
@@ -36,6 +36,8 @@ ALTURA_BARRA = 150
 # --------------------------
 # DISP
 # ----------------------------
+
+
 class Display:
     def __init__(self, parent, area):
         self.parent = parent
@@ -53,28 +55,28 @@ class Display:
         self.draw()
 
     def draw(self):
-        self.parent.area_barra.blit(self.parent.barra, (0,0))
+        self.parent.area_barra.blit(self.parent.barra, (0, 0))
         w = 0
         for n, l in enumerate(self.palabra):
             if n >= self.encendidas:
                 imagen = self.parent.dameLetra(self.parent.letrasApagadas, l)
             else:
                 imagen = self.parent.dameLetra(self.parent.letrasEncendidas, l)
-            self.area.blit(imagen, (w,0))
+            self.area.blit(imagen, (w, 0))
             w += imagen.get_rect().width
 
         w = self.area.get_rect().width
         for n in range(self.vidas):
-            self.area.blit(self.parent.imagenVida, (w,0))
+            self.area.blit(self.parent.imagenVida, (w, 0))
             w -= self.parent.imagenVida.get_rect().width
-    
+
     def encender(self):
         self.encendidas += 1
         self.draw()
 
 
 # ================================
-# EXCEPTIONS INSTANCE 
+# EXCEPTIONS INSTANCE
 # ================================
 class EndOfGame(Exception):
     pass
@@ -83,7 +85,8 @@ class EndOfGame(Exception):
 class YouWon(EndOfGame):
     def __init__(self, parent):
         self.parent = parent
-        self.imagen_ganaste = pygame.image.load("images/ganaste.png").convert_alpha()
+        self.imagen_ganaste = pygame.image.load(
+            "images/ganaste.png").convert_alpha()
 
     def accion(self):
         self.parent.aplausos.play()
@@ -94,7 +97,8 @@ class YouWon(EndOfGame):
 class YouLost(EndOfGame):
     def __init__(self, parent):
         self.parent = parent
-        self.imagen_perdiste = pygame.image.load("images/perdio.png").convert_alpha()
+        self.imagen_perdiste = pygame.image.load(
+            "images/perdio.png").convert_alpha()
 
     def accion(self):
         self.parent.status.message(self.imagen_perdiste)
@@ -102,34 +106,36 @@ class YouLost(EndOfGame):
 
 
 # ================================
-# SPRITE INSTANCE 
+# SPRITE INSTANCE
 # ================================
 class GrossiniSprite(pygame.sprite.Sprite):
 
     def __init__(self, parent):
         self.parent = parent
         self.SPEED = FBM_SPEED
-        self.imagenes = [ pygame.image.load("images/zeek%d.png"%n).convert_alpha() for n in range(12) ]
-    
+        self.imagenes = [pygame.image.load(
+            "images/zeek%d.png" % n).convert_alpha() for n in range(12)]
+
     def init(self):
         self.image = self.imagenes[0]
         self.aplauso = pygame.mixer.Sound("sounds/aplauso.ogg")
 
         self.ciclosCaminata = dict(
-            izquierda = [ 4, 5, 4, 6 ],
-            derecha = [ 1, 2, 1, 3 ],
-            arriba = [ 9, 10, 9, 11 ],
-            abajo = [ 0, 7, 0, 8 ],
+            izquierda=[4, 5, 4, 6],
+            derecha=[1, 2, 1, 3],
+            arriba=[9, 10, 9, 11],
+            abajo=[0, 7, 0, 8],
         )
         self.velocidades = dict(
-            izquierda = (-1, 0),
-            derecha = (1, 0),
-            arriba = (0, -1),
-            abajo = (0, 1),
+            izquierda=(-1, 0),
+            derecha=(1, 0),
+            arriba=(0, -1),
+            abajo=(0, 1),
         )
         self.hundido = False
         pygame.sprite.Sprite.__init__(self)
-        self.rect = self.image.get_rect(topright=self.parent.playing_area.get_rect().topright)
+        self.rect = self.image.get_rect(
+            topright=self.parent.playing_area.get_rect().topright)
         self.cuadros = self.ciclosCaminata["abajo"]
         self.frenar()
 
@@ -144,7 +150,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
             self.numeroCuadro = (self.numeroCuadro + 1) % 4
             self.rect.move_ip((dx*self.SPEED, dy*self.SPEED))
             if not self.parent.playing_area.get_rect().contains(self.rect):
-                self.rect.clamp_ip(self.parent.playing_area.get_rect() )
+                self.rect.clamp_ip(self.parent.playing_area.get_rect())
                 self.frenar()
 
     def mirar(self, direccion):
@@ -154,7 +160,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
 
 
 # ==================================
-# COLLISIONABLE SPRITE 
+# COLLISIONABLE SPRITE
 # ==================================
 class Collisionable(pygame.sprite.Sprite):
     def __init__(self, parent, otros):
@@ -164,8 +170,9 @@ class Collisionable(pygame.sprite.Sprite):
         colisiona = True
         contador = 99
         while colisiona and contador > 0:
-            self.rect.center = (randrange(self.parent.playing_area.get_rect().width), randrange(self.parent.playing_area.get_rect().height))
-            self.rect.clamp_ip(self.parent.playing_area.get_rect() )
+            self.rect.center = (randrange(self.parent.playing_area.get_rect(
+            ).width), randrange(self.parent.playing_area.get_rect().height))
+            self.rect.clamp_ip(self.parent.playing_area.get_rect())
             contador -= 1
             colisiona = False
             for g in otros:
@@ -174,15 +181,15 @@ class Collisionable(pygame.sprite.Sprite):
 
 
 # ==================================
-# LETTER SPRITE 
+# LETTER SPRITE
 # ==================================
 class LetterSprite(Collisionable):
     def __init__(self, parent):
         self.parent = parent
-        self.sound =  pygame.mixer.Sound("sounds/money.ogg")
+        self.sound = pygame.mixer.Sound("sounds/money.ogg")
 
     def spritefx(self, grossini, letra):
-        
+
         self.image = self.parent.dameLetra(self.parent.letrasEncendidas, letra)
         self.letra = letra
         Collisionable.__init__(self, self.parent, grossini)
@@ -193,7 +200,7 @@ class LetterSprite(Collisionable):
 # ==================================
 class LetterSprite_Sound:
     def __init__(self):
-        self.sound =  pygame.mixer.Sound("sounds/money.ogg")
+        self.sound = pygame.mixer.Sound("sounds/money.ogg")
 
 
 # ==================================
@@ -202,7 +209,8 @@ class LetterSprite_Sound:
 class Lago(Collisionable):
     def __init__(self, parent, otros):
         self.sound = pygame.mixer.Sound("sounds/splash.ogg")
-        self.imagenes = [ pygame.image.load("images/lago%d.png"%n).convert_alpha() for n in [0,1,2,3] ]
+        self.imagenes = [pygame.image.load(
+            "images/lago%d.png" % n).convert_alpha() for n in [0, 1, 2, 3]]
         self.image = random.choice(self.imagenes)
         Collisionable.__init__(self, parent, otros)
 
@@ -229,10 +237,12 @@ class Palabra(pygame.sprite.Group):
             self.add(lettersprite_obj)
 
 # ==================================
-# LAGOS SPRITE 
+# LAGOS SPRITE
 # ==================================
+
+
 class Lagos(pygame.sprite.Group):
-    def __init__(self,parent, numLagos, groupsinni):
+    def __init__(self, parent, numLagos, groupsinni):
         pygame.sprite.Group.__init__(self)
         for n in range(numLagos):
             self.add(Lago(parent, [groupsinni, self]))
@@ -242,37 +252,41 @@ class Lagos(pygame.sprite.Group):
 # LEVEL OBJECT
 # ==================================
 class Level:
-    
+
     def __init__(self, parent, numero, dic, grossini, groupsinni):
         self.parent = parent
         self.base_background = pygame.image.load("images/fondo.jpg").convert()
         self.background = self.base_background.copy()
         self.finNivel = False
-        self.palabras = [ dic.getRandomWordByCategory().upper().encode("utf-8") for n in range(numero) ]
+        self.palabras = [dic.getRandomWordByCategory().upper().encode("utf-8")
+                         for n in range(numero)]
         self.numero = numero
         self.grupoLagos = Lagos(self.parent, 5, groupsinni)
         self.groupsinni = groupsinni
         self.grupoLagos.draw(self.background)
         self.nuevaPalabra(grossini)
-        self.parent.playing_area.blit(self.background, (0,0))
+        self.parent.playing_area.blit(self.background, (0, 0))
 
     def nuevaPalabra(self, grossini):
         self.palabra = self.palabras.pop()
-        self.grupoLetras = Palabra(self.parent, self.palabra, self.groupsinni, self.grupoLagos)
+        self.grupoLetras = Palabra(
+            self.parent, self.palabra, self.groupsinni, self.grupoLagos)
         self.encontradas = []
         self.parent.display.setDisplay(self.palabra)
-        self.parent.playing_area.blit(self.background, (0,0))
+        self.parent.playing_area.blit(self.background, (0, 0))
 
     def draw(self, area):
-        self.grupoLetras.clear(area, self.background)  
-        self.grupoLetras.draw(area)  
+        self.grupoLetras.clear(area, self.background)
+        self.grupoLetras.draw(area)
 
     def hayMasPalabras(self):
         return len(self.palabras) > 0
 
     def verificarColisiones(self, grossini):
-        charcos_colisionados = pygame.sprite.spritecollide(grossini,self.grupoLagos,False)
-        letras_colisionadas = pygame.sprite.spritecollide(grossini,self.grupoLetras,False)
+        charcos_colisionados = pygame.sprite.spritecollide(
+            grossini, self.grupoLagos, False)
+        letras_colisionadas = pygame.sprite.spritecollide(
+            grossini, self.grupoLetras, False)
 
         if charcos_colisionados:
             sndinst = Lago_Sound()
@@ -283,7 +297,7 @@ class Level:
             for l in letras_colisionadas:
                 if l.letra == self.palabra[len(self.encontradas)]:
                     self.encontradas.append(l.letra)
-                    #grossini.frenar()
+                    # grossini.frenar()
                     self.grupoLetras.remove(l)
                     soundinst_LetterSprite = LetterSprite_Sound()
                     soundinst_LetterSprite.sound.play()
@@ -292,11 +306,13 @@ class Level:
                         if self.hayMasPalabras():
                             self.nuevaPalabra(grossini)
                         else:
-                            self.finNivel = True 
+                            self.finNivel = True
 
 # ==================================
 # SPRITE STATUS
 # ==================================
+
+
 class Status:
     def __init__(self, parent, dic):
         self.parent = parent
@@ -310,17 +326,19 @@ class Status:
 
     def resetGrossini(self):
         if self.groupsinni is not None:
-            self.groupsinni.clear(self.parent.playing_area, self.nivel.background)
+            self.groupsinni.clear(
+                self.parent.playing_area, self.nivel.background)
 
         self.grossini = GrossiniSprite(self.parent)
         self.grossini.init()
-        #aca karucha
+        # aca karucha
         self.groupsinni = pygame.sprite.Group()
         self.groupsinni.add(self.grossini)
 
     def avanzarNivel(self):
         self.nroNivel += 1
-        self.nivel = Level(self.parent, self.nroNivel, self.dic, self.grossini, self.groupsinni)
+        self.nivel = Level(self.parent, self.nroNivel,
+                           self.dic, self.grossini, self.groupsinni)
         self.parent.aplausos.play()
 
     def draw(self, area):
@@ -334,10 +352,10 @@ class Status:
 
     def message(self, msg):
         clock = pygame.time.Clock()
-        self.parent.playing_area.blit(msg, msg.get_rect(center = self.parent.playing_area.get_rect().center))
+        self.parent.playing_area.blit(msg, msg.get_rect(
+            center=self.parent.playing_area.get_rect().center))
         pygame.display.flip()
         clock.tick(4)
-
 
     def step(self):
         self.grossini.step()
@@ -355,7 +373,7 @@ class Status:
 
 
 # ==================================
-# PYGAME MAIN 
+# PYGAME MAIN
 # ==================================
 class Falabracman:
 
@@ -363,7 +381,7 @@ class Falabracman:
         self.menu_to_game_loop = True
         self.load_game_bool = True
         pass
-    
+
     # =============== < MENU > =================
     def continue_to_game(self):
         self.exit = True
@@ -375,7 +393,7 @@ class Falabracman:
             print(texto, gettext.gettext(texto))
             imagen0 = self.font.render(texto_traducido, 1, self.colorApagado)
             imagen1 = self.font.render(texto_traducido, 1, self.colorEncendido)
-            self.imagenes.append( [imagen0, imagen1] )
+            self.imagenes.append([imagen0, imagen1])
         self.drawBackground()
         self.drawOptions()
         pygame.display.update()
@@ -385,7 +403,7 @@ class Falabracman:
         altura_de_opcion = 60
         x = 405
         y = 405
-        
+
         for indice, imagenes in enumerate(self.imagenes):
             posicion = (x, y + altura_de_opcion * indice)
             area = imagenes[0].get_rect(topleft=posicion)
@@ -407,7 +425,7 @@ class Falabracman:
             self.seleccionado = 0
         elif self.seleccionado > len(self.options) - 1:
             self.seleccionado = len(self.options) - 1
-        self.sonido_menu.play() 
+        self.sonido_menu.play()
         self.drawOptions()
 
     def drawBackground(self):
@@ -425,13 +443,11 @@ class Falabracman:
         self.load_game_bool = False
 
     def menu_init(self):
-        
         self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
         self.background = pygame.image.load("images/menu.jpg").convert()
-        self.colorEncendido = (200,0,0)
-        self.colorApagado = (0,0,0)
+        self.colorEncendido = (200, 0, 0)
+        self.colorApagado = (0, 0, 0)
         self.seleccionado = 0
-        
         self.options = [
             ("play", self.continue_to_game),
             ("credits", self.show_credits),
@@ -457,16 +473,15 @@ class Falabracman:
                 elif e.key in [K_DOWN, K_KP2]:
                     self.moverSeleccion(1)
                 elif e.key in [K_RETURN, K_KP7, K_KP1, K_KP3, K_KP9]:
-                    self.sonido_menu.play() 
+                    self.sonido_menu.play()
                     titulo, funcion = self.options[self.seleccionado]
                     funcion()
                     self.update_menu()
                     break
-            
+
             pygame.display.flip()
         pygame.display.update()
-            
-        return 
+        return
     # ============== < MENU > ================
 
     def dameLetra(self, dictLetras, letra):
@@ -481,11 +496,12 @@ class Falabracman:
 
     # Show Image TODO FIXME
     def show_image(self, imagen, duracion):
-        self.screen.blit(imagen, imagen.get_rect(center=self.screen.get_rect().center))
+        self.screen.blit(imagen, imagen.get_rect(
+            center=self.screen.get_rect().center))
         ticks_final = pygame.time.get_ticks() + duracion * 1000
         clock = pygame.time.Clock()
         while pygame.time.get_ticks() < ticks_final:
-            
+
             e = pygame.event.poll()
             if e.type == KEYDOWN:
                 if e.key in [K_ESCAPE, K_SPACE, K_RETURN]:
@@ -496,16 +512,18 @@ class Falabracman:
 
     def call_menu(self):
         self.menu_init()
-        self.imagen_presentacion = pygame.image.load("images/splash.jpg").convert()
-        self.imagen_creditos = pygame.image.load("images/creditos.jpg").convert()
+        self.imagen_presentacion = pygame.image.load(
+            "images/splash.jpg").convert()
+        self.imagen_creditos = pygame.image.load(
+            "images/creditos.jpg").convert()
         self.menu_run()
         self.sonido_menu.play()
 
-    def game_instance (self, language):
+    def game_instance(self, language):
         import paladict
         dic = paladict.PalaDict(language)
         self.status = Status(self, dic)
-        #Comienza el juego
+        # Comienza el juego
         playing = True
         clock = pygame.time.Clock()
         while playing:
@@ -548,8 +566,10 @@ class Falabracman:
         self.screen = pygame.display.get_surface()
         self.screen_width = self.screen.get_rect().width
         self.screen_height = self.screen.get_rect().height
-        self.area_barra = self.screen.subsurface( ((self.screen_width-SCREEN_WIDTH)/2,0), (SCREEN_WIDTH, ALTURA_BARRA) )
-        self.playing_area = self.screen.subsurface( ((self.screen_width-SCREEN_WIDTH)/2,ALTURA_BARRA), (SCREEN_WIDTH, self.screen_height - ALTURA_BARRA) )
+        self.area_barra = self.screen.subsurface(
+            ((self.screen_width-SCREEN_WIDTH)/2, 0), (SCREEN_WIDTH, ALTURA_BARRA))
+        self.playing_area = self.screen.subsurface(
+            ((self.screen_width-SCREEN_WIDTH)/2, ALTURA_BARRA), (SCREEN_WIDTH, self.screen_height - ALTURA_BARRA))
         self.font = pygame.font.Font("fonts/VeraBd.ttf", 70)
         self.aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
         self.musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
@@ -558,9 +578,11 @@ class Falabracman:
         self.barra = pygame.image.load("images/barra.jpg").convert_alpha()
         self.letrasEncendidas = self.armarLetras(BASECOLOR, OUTLINECOLOR)
         self.letrasApagadas = self.armarLetras(OUTLINECOLOR, BASECOLOR)
-        self.display = Display(self, self.area_barra.subsurface((50,50), (SCREEN_WIDTH-100,100)))
+        self.display = Display(self, self.area_barra.subsurface(
+            (50, 50), (SCREEN_WIDTH-100, 100)))
         pygame.mouse.set_visible(False)
-        self.imagen_presentacion = pygame.image.load("images/splash.jpg").convert()
+        self.imagen_presentacion = pygame.image.load(
+            "images/splash.jpg").convert()
         self.show_image(self.imagen_presentacion, 3)
         while self.menu_to_game_loop:
             # Override the variable set byt credits for load_game_bool
@@ -574,6 +596,7 @@ class Falabracman:
                 self.game_instance(language)
             else:
                 self.load_game_bool = True
+
 
 # SCRIPT RUNNER
 if __name__ == "__main__":
