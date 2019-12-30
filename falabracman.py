@@ -117,7 +117,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
         self.parent = parent
         self.SPEED = FBM_SPEED
         self.imagenes = [pygame.transform.scale(pygame.image.load(
-            "images/zeek%d.png" % n).convert_alpha(), (int(0.8*self.parent.screen_width), int(0.12*self.parent.screen_height))) for n in range(12)]
+            "images/zeek%d.png" % n).convert_alpha(), (int(0.08*self.parent.screen_width), int(0.12*self.parent.screen_height))) for n in range(12)]
 
     def init(self):
         self.image = self.imagenes[0]
@@ -631,7 +631,7 @@ class FalabracmanGame:
         self.screen_width = self.screen.get_rect().width
         self.screen_height = self.screen.get_rect().height
         self.area_barra = self.screen.subsurface(
-            ((self.screen_width-self.screen_width)/2, 0), (self.screen_width, ALTURA_BARRA))
+            (0, 0), (self.screen_width, ALTURA_BARRA))
         self.playing_area = self.screen.subsurface(
             ((self.screen_width-self.screen_width)/2, ALTURA_BARRA), (self.screen_width, self.screen_height - ALTURA_BARRA))
         self.font = pygame.font.Font("fonts/VeraBd.ttf", 70)
