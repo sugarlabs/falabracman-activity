@@ -407,7 +407,7 @@ class FalabracmanGame:
         # FIXME DO NOT HARDCODE COORDINATES
         altura_de_opcion = 60
         x = self.screen_width//4
-        y = self.screen_height//4
+        y = int(self.screen_height*0.5)
 
         for indice, imagenes in enumerate(self.imagenes):
             posicion = (x, y + altura_de_opcion * indice)
