@@ -38,8 +38,6 @@ ALTURA_BARRA = 150
 # --------------------------
 # DISP
 # ----------------------------
-
-
 class Display:
     def __init__(self, parent, area):
         self.parent = parent
@@ -88,7 +86,9 @@ class YouWon(EndOfGame):
     def __init__(self, parent):
         self.parent = parent
         self.imagen_ganaste = pygame.transform.scale(pygame.image.load(
-            "images/ganaste.png").convert_alpha(), (int(0.8*self.parent.screen_width), int(0.6*self.parent.screen_height)))
+            "images/ganaste.png").convert_alpha(),
+            (int(0.8*self.parent.screen_width),
+                int(0.6*self.parent.screen_height)))
 
     def accion(self):
         self.parent.aplausos.play()
@@ -100,8 +100,10 @@ class YouLost(EndOfGame):
     def __init__(self, parent):
         self.parent = parent
         self.imagen_perdiste = pygame.transform.scale(pygame.image.load(
-            "images/perdio.png").convert_alpha(), (int(0.8*self.parent.screen_width), int(0.6*self.parent.screen_height)))
-        
+            "images/perdio.png").convert_alpha(), 
+            (int(0.8*self.parent.screen_width), 
+                int(0.6*self.parent.screen_height)))
+
 
     def accion(self):
         self.parent.status.message(self.imagen_perdiste)
@@ -117,7 +119,9 @@ class GrossiniSprite(pygame.sprite.Sprite):
         self.parent = parent
         self.SPEED = FBM_SPEED
         self.imagenes = [pygame.transform.scale(pygame.image.load(
-            "images/zeek%d.png" % n).convert_alpha(), (int(0.08*self.parent.screen_width), int(0.12*self.parent.screen_height))) for n in range(12)]
+            "images/zeek%d.png" % n).convert_alpha(), 
+            (int(0.08*self.parent.screen_width), 
+                int(0.12*self.parent.screen_height))) for n in range(12)]
 
     def init(self):
         self.image = self.imagenes[0]
@@ -192,7 +196,7 @@ class LetterSprite(Collisionable):
         self.sound = pygame.mixer.Sound("sounds/money.ogg")
 
     def spritefx(self, grossini, letra):
-
+        print(self.parent.letrasEncendidas)
         self.image = self.parent.dameLetra(self.parent.letrasEncendidas, letra)
         self.letra = letra
         Collisionable.__init__(self, self.parent, grossini)
@@ -212,9 +216,11 @@ class LetterSprite_Sound:
 class Lago(Collisionable):
     def __init__(self, parent, otros):
         self.sound = pygame.mixer.Sound("sounds/splash.ogg")
-        
+
         self.imagenes = [pygame.transform.scale(pygame.image.load(
-            "images/lago%d.png" % n).convert_alpha(), (int(parent.screen_width*0.15), int(parent.screen_height*0.15))) for n in [0, 1, 2, 3]]
+            "images/lago%d.png" % n).convert_alpha(), 
+            (int(parent.screen_width*0.15), 
+            int(parent.screen_height*0.15))) for n in [0, 1, 2, 3]]
         self.image = random.choice(self.imagenes)
         Collisionable.__init__(self, parent, otros)
 
@@ -260,7 +266,9 @@ class Level:
     def __init__(self, parent, numero, dic, grossini, groupsinni):
         self.parent = parent
         self.base_background = pygame.image.load("images/fondo.jpg").convert()
-        self.base_background = pygame.transform.scale(self.base_background, (self.parent.screen_width, self.parent.screen_height))
+        self.base_background = pygame.transform.scale(
+            self.base_background, 
+            (self.parent.screen_width, self.parent.screen_height))
         self.background = self.base_background.copy()
         self.finNivel = False
         self.palabras = [dic.getRandomWordByCategory().upper().encode("utf-8")
@@ -445,7 +453,8 @@ class FalabracmanGame:
     def options_menu_init(self):
         self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
         self.background = pygame.image.load("images/menu.jpg").convert()
-        self.background = pygame.transform.scale(self.background, (self.screen_width, self.screen_height))
+        self.background = pygame.transform.scale(self.background,
+            (self.screen_width, self.screen_height))
         self.colorEncendido = (200, 0, 0)
         self.colorApagado = (0, 0, 0)
         self.seleccionado = 0
@@ -462,10 +471,12 @@ class FalabracmanGame:
         self.options_menu_init()
         self.imagen_presentacion = pygame.image.load(
             "images/splash.jpg").convert()
-        self.imagen_presentacion = pygame.transform.scale(self.imagen_presentacion, (self.screen_width, self.screen_height))
+        self.imagen_presentacion = pygame.transform.scale(self.imagen_presentacion,
+            (self.screen_width, self.screen_height))
         self.imagen_creditos = pygame.image.load(
             "images/creditos.jpg").convert()
-        self.imagen_creditos = pygame.transform.scale(self.imagen_creditos, (self.screen_width, self.screen_height))
+        self.imagen_creditos = pygame.transform.scale(self.imagen_creditos,
+            (self.screen_width, self.screen_height))
         self.menu_run()
         self.sonido_menu.play()
 
@@ -500,7 +511,8 @@ class FalabracmanGame:
     def menu_init(self):
         self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
         self.background = pygame.image.load("images/menu.jpg").convert()
-        self.background = pygame.transform.scale(self.background, (self.screen_width, self.screen_height))
+        self.background = pygame.transform.scale(self.background, 
+            (self.screen_width, self.screen_height))
         self.colorEncendido = (200, 0, 0)
         self.colorApagado = (0, 0, 0)
         self.seleccionado = 0
@@ -542,7 +554,17 @@ class FalabracmanGame:
     # ============== < MENU > ================
 
     def dameLetra(self, dictLetras, letra):
-        return dictLetras.get(chr(letra), dictLetras["*"])
+        if type(letra) is int:
+            return dictLetras.get(chr(letra), dictLetras["*"])
+        elif type(letra) is str:
+            return dictLetras.get(letra, dictLetras["*"])
+        else:
+            # FIXME 
+            raise Exception(
+                "A unhandled error has occured. Please report to \n"
+                "https://github.com/sugarlabs/falabracman-activity/issues \n"
+                "Error: letra: {} \n dictletra : {}".format(letra, dictLetras)
+                )
 
     def armarLetras(self, color1, color2):
         # Arm the player instance
@@ -571,10 +593,12 @@ class FalabracmanGame:
         self.menu_init()
         self.imagen_presentacion = pygame.image.load(
             "images/splash.jpg").convert()
-        self.imagen_presentacion = pygame.transform.scale(self.imagen_presentacion, (self.screen_width, self.screen_height))
+        self.imagen_presentacion = pygame.transform.scale(self.imagen_presentacion,
+            (self.screen_width, self.screen_height))
         self.imagen_creditos = pygame.image.load(
             "images/creditos.jpg").convert()
-        self.imagen_creditos = pygame.transform.scale(self.imagen_creditos, (self.screen_width, self.screen_height))
+        self.imagen_creditos = pygame.transform.scale(self.imagen_creditos, 
+            (self.screen_width, self.screen_height))
 
         self.menu_run()
         self.sonido_menu.play()
