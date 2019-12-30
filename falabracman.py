@@ -248,7 +248,7 @@ class Level:
         self.base_background = pygame.image.load("images/fondo.jpg").convert()
         self.background = self.base_background.copy()
         self.finNivel = False
-        self.palabras = [ dic.getRandomWordByCategory().upper().encode("iso8859-1") for n in range(numero) ]
+        self.palabras = [ dic.getRandomWordByCategory().upper().encode("utf-8") for n in range(numero) ]
         self.numero = numero
         self.grupoLagos = Lagos(self.parent, 5, groupsinni)
         self.groupsinni = groupsinni
@@ -470,7 +470,7 @@ class Falabracman:
     # ============== < MENU > ================
 
     def dameLetra(self, dictLetras, letra):
-        return dictLetras.get(letra, dictLetras["*"])
+        return dictLetras.get(chr(letra), dictLetras["*"])
 
     def armarLetras(self, color1, color2):
         # Arm the player instance
@@ -567,7 +567,7 @@ class Falabracman:
             self.load_game_bool = True
             # Load the menu instance
             self.call_menu()
-            print(self.load_game_bool)
+
             # Load the game instance if it proceeds,
             # check the option selected is to show credits
             if self.load_game_bool:
