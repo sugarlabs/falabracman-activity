@@ -7,13 +7,13 @@ from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.activity.activity import Activity
 from sugar3.graphics.style import GRID_CELL_SIZE
 import pygame
-from gi.repository import Gtk, Gdk
 from gettext import gettext as _
 
 import sys
 import gi
 gi.require_version('Gtk', '3.0')
-
+gi.require_version('Gdk', '3.0')
+from gi.repository import Gtk, Gdk
 
 sys.path.append('..')  # Import sugargame package from top directory.
 
