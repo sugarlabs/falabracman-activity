@@ -4,5 +4,5 @@ activity_version = 2
 host_version = 1
 bundle_id = org.laptop.community.falabracman
 icon = activity
-exec = sugar-activity activity.Activity
+exec = sugar-activity3 activity.Falabracman
 show_launcher = yes
