@@ -477,7 +477,6 @@ class FalabracmanGame:
         self.imagen_creditos = pygame.transform.scale(self.imagen_creditos,
                                                       (self.screen_width, self.screen_height))
         self.menu_run()
-        self.sonido_menu.play()
 
     # Set langs in
     def set_language_en(self):
