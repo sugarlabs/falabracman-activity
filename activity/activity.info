@@ -1,8 +1,10 @@
 [Activity]
-name = falabracman 
+name = falabracman
 activity_version = 2
 host_version = 1
 bundle_id = org.laptop.community.falabracman
 icon = activity
+license = GPLv3+
 exec = sugar-activity3 activity.Falabracman
 show_launcher = yes
+repository = https://github.com/sugarlabs/falabracman-activity.git
