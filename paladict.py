@@ -19,13 +19,11 @@
 
 import os
 import random
-import codecs
 
 
 class PalaDict:
     def __init__(self, language):
         PALADICTIONARY = os.getcwd()+"/data/"+language+"/dict.txt"
-        #infile = codecs.open( PALADICTIONARY, "r" ,  "iso-8859-1")
         infile = open(PALADICTIONARY, "r")
         palabracman_dict = dict()
         for line in infile:

@@ -22,18 +22,16 @@ import hollow
 import gettext
 import pygame
 import random
-import sys
 
-import gi
-gi.require_version('Gtk', '3.0')
+import config as config
+import pygame.locals as pl
 
-from gi.repository import Gtk
-from gi.repository import Gdk
-
-from config import *
-from pygame.locals import *
 from random import randrange
 
+import sys
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 # CONSTANTS
 FBM_SPEED = 15
@@ -311,11 +309,11 @@ class Level:
             grossini.hundido = True
 
         if letras_colisionadas:
-            for l in letras_colisionadas:
-                if l.letra == self.palabra[len(self.encontradas)]:
-                    self.encontradas.append(l.letra)
+            for letras in letras_colisionadas:
+                if letras.letra == self.palabra[len(self.encontradas)]:
+                    self.encontradas.append(letras.letra)
                     # grossini.frenar()
-                    self.grupoLetras.remove(l)
+                    self.grupoLetras.remove(letras)
                     soundinst_LetterSprite = LetterSprite_Sound()
                     soundinst_LetterSprite.sound.play()
                     self.parent.display.encender()
@@ -336,7 +334,7 @@ class Status:
         self.dic = dic
         self.nroNivel = 0
         self.nivelMaximo = 1
-        self.setVidas(VIDAS)
+        self.setVidas(config.VIDAS)
         self.groupsinni = None
         self.resetGrossini()
         self.avanzarNivel()
@@ -457,7 +455,8 @@ class FalabracmanGame:
         self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
         self.background = pygame.image.load("images/menu.jpg").convert()
         self.background = pygame.transform.scale(self.background,
-                                                 (self.screen_width, self.screen_height))
+                                                 (self.screen_width,
+                                                  self.screen_height))
         self.colorEncendido = (200, 0, 0)
         self.colorApagado = (0, 0, 0)
         self.seleccionado = 0
@@ -474,12 +473,16 @@ class FalabracmanGame:
         self.options_menu_init()
         self.imagen_presentacion = pygame.image.load(
             "images/splash.jpg").convert()
-        self.imagen_presentacion = pygame.transform.scale(self.imagen_presentacion,
-                                                          (self.screen_width, self.screen_height))
+        self.imagen_presentacion = pygame.transform.scale(
+            self.imagen_presentacion,
+            (self.screen_width, self.screen_height)
+        )
         self.imagen_creditos = pygame.image.load(
             "images/creditos.jpg").convert()
-        self.imagen_creditos = pygame.transform.scale(self.imagen_creditos,
-                                                      (self.screen_width, self.screen_height))
+        self.imagen_creditos = pygame.transform.scale(
+            self.imagen_creditos,
+            (self.screen_width, self.screen_height)
+        )
         self.menu_run()
 
     # Set langs in
@@ -513,8 +516,10 @@ class FalabracmanGame:
     def menu_init(self):
         self.font = pygame.font.Font('fonts/ds_moster.ttf', 48)
         self.background = pygame.image.load("images/menu.jpg").convert()
-        self.background = pygame.transform.scale(self.background,
-                                                 (self.screen_width, self.screen_height))
+        self.background = pygame.transform.scale(
+            self.background,
+            (self.screen_width, self.screen_height)
+        )
         self.colorEncendido = (200, 0, 0)
         self.colorApagado = (0, 0, 0)
         self.seleccionado = 0
@@ -535,15 +540,17 @@ class FalabracmanGame:
                 Gtk.main_iteration()
 
             e = pygame.event.poll()
-            if e.type == QUIT:
+            if e.type == pl.QUIT:
                 self.menu_to_game_loop = False
                 self.exit = True
-            if e.type == KEYDOWN:
-                if e.key in [K_UP, K_KP8]:
+            if e.type == pl.KEYDOWN:
+                if e.key in [pl.K_UP, pl.K_KP8]:
                     self.moverSeleccion(-1)
-                elif e.key in [K_DOWN, K_KP2]:
+                elif e.key in [pl.K_DOWN, pl.K_KP2]:
                     self.moverSeleccion(1)
-                elif e.key in [K_RETURN, K_KP7, K_KP1, K_KP3, K_KP9]:
+                elif e.key in [pl.K_RETURN, pl.K_KP7,
+                               pl.K_KP1, pl.K_KP3,
+                               pl.K_KP9]:
                     self.sonido_menu.play()
                     titulo, funcion = self.options[self.seleccionado]
                     funcion()
@@ -571,8 +578,8 @@ class FalabracmanGame:
     def armarLetras(self, color1, color2):
         # Arm the player instance
         d = {}
-        for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ*":
-            d[l] = hollow.textOutline(self.font, l, color1, color2)
+        for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ*":
+            d[letter] = hollow.textOutline(self.font, letter, color1, color2)
         return d
 
     # Show Image TODO FIXME
@@ -584,8 +591,8 @@ class FalabracmanGame:
         while pygame.time.get_ticks() < ticks_final:
 
             e = pygame.event.poll()
-            if e.type == KEYDOWN:
-                if e.key in [K_ESCAPE, K_SPACE, K_RETURN]:
+            if e.type == pl.KEYDOWN:
+                if e.key in [pl.K_ESCAPE, pl.K_SPACE, pl.K_RETURN]:
                     self.sonido_menu.play()
                     return
             pygame.display.flip()
@@ -595,12 +602,16 @@ class FalabracmanGame:
         self.menu_init()
         self.imagen_presentacion = pygame.image.load(
             "images/splash.jpg").convert()
-        self.imagen_presentacion = pygame.transform.scale(self.imagen_presentacion,
-                                                          (self.screen_width, self.screen_height))
+        self.imagen_presentacion = pygame.transform.scale(
+            self.imagen_presentacion,
+            (self.screen_width, self.screen_height)
+        )
         self.imagen_creditos = pygame.image.load(
             "images/creditos.jpg").convert()
-        self.imagen_creditos = pygame.transform.scale(self.imagen_creditos,
-                                                      (self.screen_width, self.screen_height))
+        self.imagen_creditos = pygame.transform.scale(
+            self.imagen_creditos,
+            (self.screen_width, self.screen_height)
+        )
 
         self.menu_run()
         self.sonido_menu.play()
@@ -620,24 +631,24 @@ class FalabracmanGame:
                 Gtk.main_iteration()
 
             event = pygame.event.poll()
-            if event.type == QUIT:
+            if event.type == pl.QUIT:
                 playing = False
                 self.menu_to_game_loop = False
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.VIDEORESIZE:
                 pygame.display.set_mode(event.size, pygame.RESIZABLE)
-            elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
+            elif event.type == pl.KEYDOWN:
+                if event.key == pl.K_ESCAPE:
                     playing = False
                     self.menu_to_game_loop = False
-                elif event.key in [K_UP, K_KP8, K_KP9]:
+                elif event.key in [pl.K_UP, pl.K_KP8, pl.K_KP9]:
                     self.status.grossini.mirar("arriba")
-                elif event.key in [K_DOWN, K_KP2, K_KP3]:
+                elif event.key in [pl.K_DOWN, pl.K_KP2, pl.K_KP3]:
                     self.status.grossini.mirar("abajo")
-                elif event.key in [K_LEFT, K_KP4, K_KP7]:
+                elif event.key in [pl.K_LEFT, pl.K_KP4, pl.K_KP7]:
                     self.status.grossini.mirar("izquierda")
-                elif event.key in [K_RIGHT, K_KP6, K_KP1]:
+                elif event.key in [pl.K_RIGHT, pl.K_KP6, pl.K_KP1]:
                     self.status.grossini.mirar("derecha")
             try:
                 self.status.step()
@@ -659,17 +670,23 @@ class FalabracmanGame:
         self.area_barra = self.screen.subsurface(
             (0, 0), (self.screen_width, ALTURA_BARRA))
         self.playing_area = self.screen.subsurface(
-            ((self.screen_width-self.screen_width)/2, ALTURA_BARRA), (self.screen_width, self.screen_height - ALTURA_BARRA))
+            ((self.screen_width-self.screen_width)/2, ALTURA_BARRA),
+            (self.screen_width, self.screen_height - ALTURA_BARRA)
+        )
         self.font = pygame.font.Font("fonts/VeraBd.ttf", 70)
         self.aplausos = pygame.mixer.Sound("sounds/aplauso.ogg")
         self.musica = pygame.mixer.Sound("sounds/menumusic22.ogg")
         grossini_instance = GrossiniSprite(self)
         self.imagenVida = grossini_instance.imagenes[0]
         self.barra = pygame.transform.scale(pygame.image.load(
-            "images/barra.jpg").convert_alpha(), (self.screen_width, ALTURA_BARRA))
+            "images/barra.jpg").convert_alpha(),
+            (self.screen_width, ALTURA_BARRA)
+        )
 
-        self.letrasEncendidas = self.armarLetras(BASECOLOR, OUTLINECOLOR)
-        self.letrasApagadas = self.armarLetras(OUTLINECOLOR, BASECOLOR)
+        self.letrasEncendidas = self.armarLetras(config.BASECOLOR,
+                                                 config.OUTLINECOLOR)
+        self.letrasApagadas = self.armarLetras(config.OUTLINECOLOR,
+                                               config.BASECOLOR)
         self.display = Display(self, self.area_barra.subsurface(
             (50, 50), (self.screen_width-100, 100)))
         pygame.mouse.set_visible(False)
