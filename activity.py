@@ -1,19 +1,19 @@
-import falabracman
-import sugargame.canvas
-from sugar3.activity.widgets import StopButton
-from sugar3.graphics.toolbutton import ToolButton
-from sugar3.activity.widgets import ActivityToolbarButton
-from sugar3.graphics.toolbarbox import ToolbarBox
-from sugar3.activity.activity import Activity
-from sugar3.graphics.style import GRID_CELL_SIZE
-import pygame
-from gettext import gettext as _
-
 import sys
 import gi
+
 gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
 from gi.repository import Gtk, Gdk
+import pygame
+
+from sugar3.activity.activity import Activity
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.graphics.style import GRID_CELL_SIZE
+from sugar3.activity.widgets import StopButton
+from sugar3.activity.widgets import ActivityToolbarButton
+
+import sugargame.canvas
+
+import falabracman
 
 sys.path.append('..')  # Import sugargame package from top directory.
 

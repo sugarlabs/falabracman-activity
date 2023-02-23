@@ -13,7 +13,7 @@ import sys
 import pygame
 import pygame.font
 import pygame.image
-from pygame.locals import *
+import pygame.locals as pl
 
 
 def textOutline(font, message, fontcolor, outlinecolor):
@@ -51,9 +51,9 @@ if __name__ == '__main__':
     # wait for the finish
     while 1:
         event = pygame.event.wait()
-        if event.type is KEYDOWN and event.key == K_s:  # save it
+        if event.type is pl.KEYDOWN and event.key == pl.K_s:  # save it
             name = os.path.splitext(sys.argv[0])[0] + '.bmp'
             print('Saving image to:', name)
             pygame.image.save(win, name)
-        elif event.type in (QUIT, KEYDOWN, MOUSEBUTTONDOWN):
+        elif event.type in (pl.QUIT, pl.KEYDOWN, pl.MOUSEBUTTONDOWN):
             break
