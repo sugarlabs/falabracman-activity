@@ -17,19 +17,23 @@
 # You should have received a copy of the GNU General Public License
 # along with Falabracman.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+import os
+import hollow
+import gettext
 import pygame
+import random
+import sys
+
+import gi
+gi.require_version('Gtk', '3.0')
+
+from gi.repository import Gtk
+from gi.repository import Gdk
+
+from config import *
 from pygame.locals import *
 from random import randrange
-import random
-import gettext
-import hollow
-from config import *
-import gi
-import sys
-import os
-from gi.repository import Gdk
-gi.require_version('Gtk', '3.0')
+
 
 # CONSTANTS
 FBM_SPEED = 15
