@@ -50,17 +50,17 @@ class Translator(object):
         # Enable events
         # (add instead of set here because the main window is already realized)
         self._activity.add_events(
-            Gdk.EventMask.KEY_PRESS_MASK |
-            Gdk.EventMask.KEY_RELEASE_MASK |
-            Gdk.EventMask.VISIBILITY_NOTIFY_MASK
+            Gdk.EventMask.KEY_PRESS_MASK
+            | Gdk.EventMask.KEY_RELEASE_MASK
+            | Gdk.EventMask.VISIBILITY_NOTIFY_MASK
         )
 
         self._inner_evb.set_events(
-            Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.POINTER_MOTION_HINT_MASK |
-            Gdk.EventMask.BUTTON_MOTION_MASK |
-            Gdk.EventMask.BUTTON_PRESS_MASK |
-            Gdk.EventMask.BUTTON_RELEASE_MASK
+            Gdk.EventMask.POINTER_MOTION_MASK
+            | Gdk.EventMask.POINTER_MOTION_HINT_MASK
+            | Gdk.EventMask.BUTTON_MOTION_MASK
+            | Gdk.EventMask.BUTTON_PRESS_MASK
+            | Gdk.EventMask.BUTTON_RELEASE_MASK
         )
 
         self._activity.set_can_focus(True)
@@ -199,7 +199,7 @@ class Translator(object):
         return True
 
     def _mousemove_cb(self, widget, event):
-        # From http://www.learningpython.com/2006/07/25/writing-a-custom-widget-using-pygtk/
+        # http://www.learningpython.com/2006/07/25/writing-a-custom-widget-using-pygtk/
         # if this is a hint, then let's get all the necessary
         # information, if not it's all we need.
         if event.is_hint:

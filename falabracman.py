@@ -91,8 +91,8 @@ class YouWon(EndOfGame):
         self.parent = parent
         self.imagen_ganaste = pygame.transform.scale(pygame.image.load(
             "images/ganaste.png").convert_alpha(),
-            (int(0.8*self.parent.screen_width),
-                int(0.6*self.parent.screen_height)))
+            (int(0.8 * self.parent.screen_width),
+                int(0.6 * self.parent.screen_height)))
 
     def accion(self):
         self.parent.aplausos.play()
@@ -105,8 +105,8 @@ class YouLost(EndOfGame):
         self.parent = parent
         self.imagen_perdiste = pygame.transform.scale(pygame.image.load(
             "images/perdio.png").convert_alpha(),
-            (int(0.8*self.parent.screen_width),
-                int(0.6*self.parent.screen_height)))
+            (int(0.8 * self.parent.screen_width),
+                int(0.6 * self.parent.screen_height)))
 
     def accion(self):
         self.parent.status.message(self.imagen_perdiste)
@@ -123,8 +123,8 @@ class GrossiniSprite(pygame.sprite.Sprite):
         self.SPEED = FBM_SPEED
         self.imagenes = [pygame.transform.scale(pygame.image.load(
             "images/zeek%d.png" % n).convert_alpha(),
-            (int(0.08*self.parent.screen_width),
-                int(0.12*self.parent.screen_height))) for n in range(12)]
+            (int(0.08 * self.parent.screen_width),
+                int(0.12 * self.parent.screen_height))) for n in range(12)]
 
     def init(self):
         self.image = self.imagenes[0]
@@ -158,7 +158,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
         self.image = self.imagenes[self.cuadros[self.numeroCuadro]]
         if dx != 0 or dy != 0:
             self.numeroCuadro = (self.numeroCuadro + 1) % 4
-            self.rect.move_ip((dx*self.SPEED, dy*self.SPEED))
+            self.rect.move_ip((dx * self.SPEED, dy * self.SPEED))
             if not self.parent.playing_area.get_rect().contains(self.rect):
                 self.rect.clamp_ip(self.parent.playing_area.get_rect())
                 self.frenar()
@@ -221,8 +221,8 @@ class Lago(Collisionable):
 
         self.imagenes = [pygame.transform.scale(pygame.image.load(
             "images/lago%d.png" % n).convert_alpha(),
-            (int(parent.screen_width*0.15),
-             int(parent.screen_height*0.15))) for n in [0, 1, 2, 3]]
+            (int(parent.screen_width * 0.15),
+             int(parent.screen_height * 0.15))) for n in [0, 1, 2, 3]]
         self.image = random.choice(self.imagenes)
         Collisionable.__init__(self, parent, otros)
 
@@ -376,7 +376,7 @@ class Status:
         self.grossini.step()
         self.nivel.verificarColisiones(self.grossini)
         if self.grossini.hundido:
-            self.setVidas(self.vidas-1)
+            self.setVidas(self.vidas - 1)
             self.resetGrossini()
         if self.nivel.finNivel:
             if self.nivel.numero > self.nivelMaximo:
@@ -415,8 +415,8 @@ class FalabracmanGame:
     def drawOptions(self):
         # FIXME DO NOT HARDCODE COORDINATES
         altura_de_opcion = 60
-        x = self.screen_width//4
-        y = int(self.screen_height*0.5)
+        x = self.screen_width // 4
+        y = int(self.screen_height * 0.5)
 
         for indice, imagenes in enumerate(self.imagenes):
             posicion = (x, y + altura_de_opcion * indice)
@@ -443,7 +443,7 @@ class FalabracmanGame:
         self.drawOptions()
 
     def drawBackground(self):
-        left_padding = (self.screen.get_rect().width-self.screen_width)/2
+        left_padding = (self.screen.get_rect().width - self.screen_width) / 2
         self.screen.blit(self.background, (left_padding, 0))
 
     def exitDelMenu(self):
@@ -670,7 +670,7 @@ class FalabracmanGame:
         self.area_barra = self.screen.subsurface(
             (0, 0), (self.screen_width, ALTURA_BARRA))
         self.playing_area = self.screen.subsurface(
-            ((self.screen_width-self.screen_width)/2, ALTURA_BARRA),
+            ((self.screen_width - self.screen_width) / 2, ALTURA_BARRA),
             (self.screen_width, self.screen_height - ALTURA_BARRA)
         )
         self.font = pygame.font.Font("fonts/VeraBd.ttf", 70)
@@ -688,7 +688,7 @@ class FalabracmanGame:
         self.letrasApagadas = self.armarLetras(config.OUTLINECOLOR,
                                                config.BASECOLOR)
         self.display = Display(self, self.area_barra.subsurface(
-            (50, 50), (self.screen_width-100, 100)))
+            (50, 50), (self.screen_width - 100, 100)))
         pygame.mouse.set_visible(False)
         self.imagen_presentacion = pygame.image.load(
             "images/splash.jpg").convert()

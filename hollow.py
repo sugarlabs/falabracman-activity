@@ -43,7 +43,7 @@ if __name__ == '__main__':
     width, height = text2.get_rect().inflate(10, 10).size
     win = pygame.display.set_mode((width, height))
     win.fill((20, 20, 80), (0, 0, width, 30))
-    win.fill((80, 20, 80), (0, height-30, width, 30))
+    win.fill((80, 20, 80), (0, height - 30, width, 30))
 
     win.blit(text2, text2.get_rect(center=win.get_rect().center))
     pygame.display.flip()

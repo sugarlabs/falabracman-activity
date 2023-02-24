@@ -23,7 +23,7 @@ import random
 
 class PalaDict:
     def __init__(self, language):
-        PALADICTIONARY = os.getcwd()+"/data/"+language+"/dict.txt"
+        PALADICTIONARY = os.getcwd() + "/data/" + language + "/dict.txt"
         infile = open(PALADICTIONARY, "r")
         palabracman_dict = dict()
         for line in infile:
@@ -42,7 +42,7 @@ class PalaDict:
 
     def getRandomWordByCategory(self):
         dictionaryCategory = self.palabracman_dict["Palabras\n"]
-        randomWordIndex = random.randint(0, (dictionaryCategory.__len__()-1))
+        randomWordIndex = random.randint(0, (dictionaryCategory.__len__() - 1))
         return dictionaryCategory[randomWordIndex].rpartition("\n")[0]
 
 
