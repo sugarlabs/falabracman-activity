@@ -1,6 +1,6 @@
 [Activity]
 name = falabracman
-activity_version = 2
+activity_version = 3
 host_version = 1
 bundle_id = org.laptop.community.falabracman
 icon = activity
