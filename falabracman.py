@@ -344,6 +344,8 @@ class Level:
                     self.parent.display.encender()
                     if len(self.encontradas) == len(self.palabra):
                         if self.hayMasPalabras():
+                            grossini.mirar('abajo')
+                            grossini.frenar()
                             self.nuevaPalabra(grossini)
                         else:
                             self.finNivel = True
@@ -361,7 +363,6 @@ class Status:
         self.nivelMaximo = 1
         self.setVidas(config.VIDAS)
         self.groupsinni = None
-        self.resetGrossini()
         self.avanzarNivel()
 
     def resetGrossini(self):
@@ -377,6 +378,7 @@ class Status:
 
     def avanzarNivel(self):
         self.nroNivel += 1
+        self.resetGrossini()
         self.nivel = Level(self.parent, self.nroNivel,
                            self.dic, self.grossini, self.groupsinni)
         self.parent.aplausos.play()
