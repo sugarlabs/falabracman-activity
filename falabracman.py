@@ -173,21 +173,46 @@ class GrossiniSprite(pygame.sprite.Sprite):
 # COLLISIONABLE SPRITE
 # ==================================
 class Collisionable(pygame.sprite.Sprite):
-    def __init__(self, parent, otros):
+    def __init__(self, parent, collision_groups, is_lake=False):
         pygame.sprite.Sprite.__init__(self)
         self.parent = parent
         self.rect = self.image.get_rect()
-        colisiona = True
-        contador = 99
-        while colisiona and contador > 0:
+        colliding = True
+        counter = 99
+        while colliding and counter > 0:
             self.rect.center = (randrange(self.parent.playing_area.get_rect(
             ).width), randrange(self.parent.playing_area.get_rect().height))
             self.rect.clamp_ip(self.parent.playing_area.get_rect())
-            contador -= 1
-            colisiona = False
-            for g in otros:
-                if pygame.sprite.spritecollide(self, g, False):
-                    colisiona = True
+            counter -= 1
+            colliding = False
+            for group in collision_groups:
+                if not is_lake:
+                    if pygame.sprite.spritecollide(self, group, False):
+                        colliding = True
+                else:
+                    for osprite in group:
+                        if not self.space_between(osprite):
+                            colliding = True
+
+    # returns true if the space between self and osprite is
+    # big enough for grosinni to pass through
+    def space_between(self, osprite):
+        x_dist = abs(self.rect.centerx - osprite.rect.centerx)
+        x_dist -= self.rect.width / 2
+        x_dist -= osprite.rect.width / 2
+
+        y_dist = abs(self.rect.centery - osprite.rect.centery)
+        y_dist -= self.rect.height / 2
+        y_dist -= osprite.rect.height / 2
+
+        # grossini is scaled to 8% of screen width and
+        # 12% height of screen height. req_dist should
+        # be greater than that
+        req_x_dist = int(0.12 * self.parent.screen_width)
+        req_y_dist = int(0.16 * self.parent.screen_height)
+
+        status = x_dist > req_x_dist or y_dist > req_y_dist
+        return status
 
 
 # ==================================
@@ -224,7 +249,7 @@ class Lago(Collisionable):
             (int(parent.screen_width * 0.15),
              int(parent.screen_height * 0.15))) for n in [0, 1, 2, 3]]
         self.image = random.choice(self.imagenes)
-        Collisionable.__init__(self, parent, otros)
+        Collisionable.__init__(self, parent, otros, True)
 
 
 # ==================================
@@ -319,6 +344,8 @@ class Level:
                     self.parent.display.encender()
                     if len(self.encontradas) == len(self.palabra):
                         if self.hayMasPalabras():
+                            grossini.mirar('abajo')
+                            grossini.frenar()
                             self.nuevaPalabra(grossini)
                         else:
                             self.finNivel = True
@@ -336,7 +363,6 @@ class Status:
         self.nivelMaximo = 1
         self.setVidas(config.VIDAS)
         self.groupsinni = None
-        self.resetGrossini()
         self.avanzarNivel()
 
     def resetGrossini(self):
@@ -352,6 +378,7 @@ class Status:
 
     def avanzarNivel(self):
         self.nroNivel += 1
+        self.resetGrossini()
         self.nivel = Level(self.parent, self.nroNivel,
                            self.dic, self.grossini, self.groupsinni)
         self.parent.aplausos.play()
@@ -712,4 +739,6 @@ class FalabracmanGame:
 # SCRIPT RUNNER
 if __name__ == "__main__":
     fbman = FalabracmanGame()
+    pygame.init()
+    pygame.display.set_mode((1024, 768))
     fbman.run()
