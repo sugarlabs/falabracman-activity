@@ -11,6 +11,7 @@ from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.graphics.style import GRID_CELL_SIZE
 from sugar3.activity.widgets import StopButton
 from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.graphics.radiotoolbutton import RadioToolButton
 
 import sugargame.canvas
 
@@ -55,6 +56,32 @@ class Falabracman(Activity):
         activity_button = ActivityToolbarButton(self)
         toolbar_box.toolbar.insert(activity_button, -1)
         activity_button.show()
+
+        def level_button(icon_name, tooltip, levels, group=None):
+            if group:
+                button = RadioToolButton(icon_name=icon_name,
+                                         group=group)
+            else:
+                button = RadioToolButton(icon_name=icon_name)
+
+            def callback(source):
+                if source.get_active():
+                    self.game.grossinni_speed = 5 * levels
+                    self.game.max_levels = levels
+                    self.game.load_menu()
+
+            button.connect('clicked', callback)
+            button.set_tooltip(tooltip)
+            return button
+
+        med_but = level_button('male-4', "Medium", 3)
+        easy_but = level_button('male-1', "Easy", 2, med_but)
+        hard_but = level_button('male-7', "Hard", 4, med_but)
+
+        self._levels_buttons = [easy_but, med_but, hard_but]
+        for button in self._levels_buttons:
+            toolbar_box.toolbar.insert(button, -1)
+            button.show()
 
         # Blank space (separator) and Stop button at the end:
 

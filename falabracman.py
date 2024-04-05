@@ -34,7 +34,6 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 # CONSTANTS
-FBM_SPEED = 15
 ALTURA_BARRA = 150
 
 # --------------------------
@@ -120,7 +119,7 @@ class GrossiniSprite(pygame.sprite.Sprite):
 
     def __init__(self, parent):
         self.parent = parent
-        self.SPEED = FBM_SPEED
+        self.SPEED = self.parent.grossinni_speed
         self.imagenes = [pygame.transform.scale(pygame.image.load(
             "images/zeek%d.png" % n).convert_alpha(),
             (int(0.08 * self.parent.screen_width),
@@ -360,7 +359,7 @@ class Status:
         self.parent = parent
         self.dic = dic
         self.nroNivel = 0
-        self.nivelMaximo = 1
+        self.nivelMaximo = self.parent.max_levels - 1
         self.setVidas(config.VIDAS)
         self.groupsinni = None
         self.avanzarNivel()
@@ -420,9 +419,8 @@ class Status:
 class FalabracmanGame:
 
     def __init__(self):
-        self.menu_to_game_loop = True
-        self.load_game_bool = True
-        pass
+        self.grossinni_speed = 15  # Medium difficulty: by default
+        self.max_levels = 3  # Medium difficulty: by default
 
     # =============== < MENU > =================
     def continue_to_game(self):
@@ -685,6 +683,22 @@ class FalabracmanGame:
             pygame.display.update()
             self.status.draw(self.playing_area)
 
+    def load_menu(self):
+        self.menu_to_game_loop = True
+        self.load_game_bool = True
+        while self.menu_to_game_loop:
+            # Override the variable set byt credits for load_game_bool
+            self.load_game_bool = True
+            # Load the menu instance
+            self.call_menu()
+
+            # Load the game instance if it proceeds,
+            # check the option selected is to show credits
+            if self.load_game_bool:
+                self.game_instance()
+            else:
+                self.load_game_bool = True
+
     # Pygame canonical run
     def run(self):
         # Initialize assuming language = en
@@ -722,18 +736,8 @@ class FalabracmanGame:
         self.imagen_presentacion = pygame.transform.scale(
             self.imagen_presentacion, (self.screen_width, self.screen_height))
         self.show_image(self.imagen_presentacion, 3)
-        while self.menu_to_game_loop:
-            # Override the variable set byt credits for load_game_bool
-            self.load_game_bool = True
-            # Load the menu instance
-            self.call_menu()
 
-            # Load the game instance if it proceeds,
-            # check the option selected is to show credits
-            if self.load_game_bool:
-                self.game_instance()
-            else:
-                self.load_game_bool = True
+        self.load_menu()
 
 
 # SCRIPT RUNNER
