@@ -1,0 +1,14 @@
+3
+
+* port to gtk+3 (Yash Agrawal)
+* removed MANIFEST (Yash Agrawal)
+* fix screen size issue (Yash Agrawal)
+* Fix use of Gst.Message.structure (rhl-bthr)
+* Port to Python 3 (Srevin Saju)
+* adding license tag in activity.info (Prakash Ujjwal)
+* fixed gi version import and formatted imports (Riya Jain)
+* Fixed Flake8 warnings (Riya Jain)
+* Added .flake8 ignore file and fixed all flake8 warnings (Riya Jain)
+* Use python3 in setup (Ibiam Chihurumnaya)
+* Update sugargame to support key presses (Riya Jain)
+* Update Readme and Add screenshot (Riya Jain)
